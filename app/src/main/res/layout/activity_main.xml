@@ -13,13 +13,20 @@
         android:gravity="center|center_vertical"
         android:text="Logo" />
 
-    <android.support.v7.widget.SearchView
-        android:id="@+id/cercaEvento"
-        android:layout_margin="16dp"
+<!--    <android.support.v7.widget.SearchView-->
+<!--        android:id="@+id/cercaEvento"-->
+<!--        android:layout_margin="16dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:padding="8dp"-->
+<!--        android:queryHint="Evento" />-->
+
+    <Button
+        android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:queryHint="Evento" />
+        android:onClick="maps"
+        android:text="Button" />
 
     <ListView
 

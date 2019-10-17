@@ -14,4 +14,11 @@
     <string name="menu_tools">Tools</string>
     <string name="menu_share">Share</string>
     <string name="menu_send">Send</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="search">Search</string>
+    <string name="mapType">Toggle Type</string>
+    <string name="zoomIn">+</string>
+    <string name="zoomOut">-</string>
+    <string name="custom">Custom Map</string>
+    <string name="current_location">Current Location</string>
 </resources>
