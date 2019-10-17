@@ -30,7 +30,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        if(mapFragment != null) {
+        if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
     }
@@ -50,9 +50,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        LatLng NewYorkNewYork = new LatLng(49.118473, -122.8013934);
+        LatLng NewtonArena = new LatLng(49, -122.949);
+        LatLng surrey2 = new LatLng(50.19, -122.949);
+
+        mMap.addMarker(new MarkerOptions().position(NewYorkNewYork).title("Marker in Surrey"));
+        mMap.addMarker(new MarkerOptions().position(surrey2).title("Marker in Surrey"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(NewYorkNewYork));
     }
 
     public void onSearch(View v) {
@@ -72,5 +76,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.addMarker(new MarkerOptions().position(latLng).title(location));
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
+    }
+
+    public void onChangeMapType(View v) {
+        if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL)
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        else mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+    }
+
+    public void onZoom(View v) {
+        if (v.getId() == R.id.btnZoomIn)
+            mMap.animateCamera(CameraUpdateFactory.zoomIn());
+        else mMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
 }

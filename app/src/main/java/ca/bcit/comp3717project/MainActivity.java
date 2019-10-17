@@ -19,9 +19,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void maps(View view){
         Intent intent = new Intent(this, MapsActivity.class);
-//        EditText editText = (EditText) findViewById(R.id.editText);
-//        String message = editText.getText().toString();
-//        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void search(View view){
+        Intent intent = new Intent(this, Search.class);
         startActivity(intent);
     }
 }
