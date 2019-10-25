@@ -57,6 +57,14 @@
                 android:text="@string/zoomOut"
                 android:layout_gravity="center_vertical"
                 android:onClick="onZoom"/>
+            <ImageView
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/current_location"
+                android:contentDescription="@string/current_location"
+                android:onClick="onCurrentLocation"
+                android:layout_gravity="center_vertical"
+                />
         </LinearLayout>
     </fragment>
 

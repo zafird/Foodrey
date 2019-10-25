@@ -1,10 +1,17 @@
 package ca.bcit.comp3717project;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
@@ -24,7 +31,9 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private float defaultZoomLevel = 6.0f;
+    private LocationManager locationManager;
+    private LocationListener locationListener;
+    private float defaultZoomLevel = 10.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +102,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else mMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
 
-    private void addMarker2Map(Location location, String title) {
+    public void onCurrentLocation(View v) {
+        // Zoom into users location
+        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                addMarker2MapDraw(location, null);
+            }
+
+            @Override
+            public void onStatusChanged(String s, int i, Bundle bundle) {}
+
+            @Override
+            public void onProviderEnabled(String s) {}
+
+            @Override
+            public void onProviderDisabled(String s) {}
+        };
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
+            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            addMarker2MapDraw(lastKnownLocation, null);
+        } else {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }
+    }
+
+    private void addMarker2MapDraw(Location location, String title) {
 
         if(title == null) {
             title = "Current Location: %4.3f Lat %4.3f Long.";
@@ -104,6 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,defaultZoomLevel));
     }
 
     private void addMarker2Map(LatLng coordinates, String title) {
