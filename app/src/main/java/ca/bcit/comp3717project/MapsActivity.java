@@ -4,6 +4,8 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -22,6 +24,7 @@ import java.util.List;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private float defaultZoomLevel = 6.0f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,13 +53,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng NewYorkNewYork = new LatLng(49.118473, -122.8013934);
-        LatLng NewtonArena = new LatLng(49, -122.949);
-        LatLng surrey2 = new LatLng(50.19, -122.949);
+        LatLng NewtonArena = new LatLng(49.1320993, -122.8420707);
+        addMarker2Map(NewtonArena, "Newton Arena");
 
-        mMap.addMarker(new MarkerOptions().position(NewYorkNewYork).title("Marker in Surrey"));
-        mMap.addMarker(new MarkerOptions().position(surrey2).title("Marker in Surrey"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(NewYorkNewYork));
+        LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
+        addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
+
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
     }
 
     public void onSearch(View v) {
@@ -88,5 +91,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (v.getId() == R.id.btnZoomIn)
             mMap.animateCamera(CameraUpdateFactory.zoomIn());
         else mMap.animateCamera(CameraUpdateFactory.zoomOut());
+    }
+
+    private void addMarker2Map(Location location, String title) {
+
+        if(title == null) {
+            title = "Current Location: %4.3f Lat %4.3f Long.";
+        }
+        String msg = String.format(title,
+                location.getLatitude(),
+                location.getLongitude());
+
+        LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
+    }
+
+    private void addMarker2Map(LatLng coordinates, String title) {
+
+        if(title == null) {
+            title = "Current Location: %4.3f Lat %4.3f Long.";
+        }
+        String msg = String.format(title, coordinates.latitude, coordinates.longitude);
+
+        LatLng latlng = new LatLng(coordinates.latitude, coordinates.longitude);
+        mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
     }
 }

@@ -36,26 +36,28 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        tools:context="ca.bcit.mapplaces.MapsActivity" />
+        tools:context="ca.bcit.mapplaces.MapsActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="horizontal">
-        <Button
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/btnZoomIn"
-            android:text="@string/zoomIn"
-            android:layout_gravity="center_vertical"
-            android:onClick="onZoom"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnZoomOut"
-            android:text="@string/zoomOut"
-            android:layout_gravity="center_vertical"
-            android:onClick="onZoom"/>
-    </LinearLayout>
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnZoomIn"
+                android:text="@string/zoomIn"
+                android:layout_gravity="center_vertical"
+                android:onClick="onZoom"/>
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnZoomOut"
+                android:text="@string/zoomOut"
+                android:layout_gravity="center_vertical"
+                android:onClick="onZoom"/>
+        </LinearLayout>
+    </fragment>
+
 </LinearLayout>
