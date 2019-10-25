@@ -68,6 +68,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
         addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
 
+        //TODO
+        //google map is unclear, not sharp
+        //Try, but not work: https://stackoverflow.com/questions/18173912/blurry-map-tiles-at-start-of-android-app-based-on-google-maps-api-v2
+        //shift to API3?
+
+        //TODO
+        //fontawesome : https://stackoverflow.com/questions/37959751/how-to-use-font-awesome-icon-in-android-application
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
     }
 
