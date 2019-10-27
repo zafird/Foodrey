@@ -41,25 +41,29 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
+            android:layout_gravity="bottom|right"
+            android:paddingRight="20dp"
             android:orientation="horizontal">
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnZoomIn"
                 android:text="@string/zoomIn"
                 android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
                 android:onClick="onZoom"/>
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnZoomOut"
                 android:text="@string/zoomOut"
                 android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
                 android:onClick="onZoom"/>
             <ImageView
                 android:layout_width="25dp"
                 android:layout_height="25dp"
+                android:paddingLeft="10dp"
                 android:src="@drawable/current_location"
                 android:contentDescription="@string/current_location"
                 android:onClick="onCurrentLocation"

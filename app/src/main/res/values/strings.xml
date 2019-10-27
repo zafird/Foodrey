@@ -17,8 +17,8 @@
     <string name="title_activity_maps">Map</string>
     <string name="search">Search</string>
     <string name="mapType">Toggle Type</string>
-    <string name="zoomIn">+</string>
-    <string name="zoomOut">-</string>
+    <string name="zoomIn">&#xf067;</string>
+    <string name="zoomOut">&#xf068;</string>
     <string name="custom">Custom Map</string>
     <string name="current_location">Current Location</string>
 </resources>

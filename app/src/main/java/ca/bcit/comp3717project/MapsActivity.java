@@ -8,6 +8,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Typeface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -15,6 +16,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -45,6 +47,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+
+        //TODO
+        //Tried : https://stackoverflow.com/questions/37959751/how-to-use-font-awesome-icon-in-android-application
+        //Result: Using fontawesome class is not working with view.inflate.Exception
+        //Instead fontawesome button style
+        Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
+        Button buttonMinus = (Button)findViewById( R.id.btnZoomOut );
+        Button buttonPlus = (Button)findViewById( R.id.btnZoomIn );
+        buttonMinus.setTypeface(font);
+        buttonPlus.setTypeface(font);
     }
 
 
@@ -73,8 +85,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Try, but not work: https://stackoverflow.com/questions/18173912/blurry-map-tiles-at-start-of-android-app-based-on-google-maps-api-v2
         //shift to API3?
 
-        //TODO
-        //fontawesome : https://stackoverflow.com/questions/37959751/how-to-use-font-awesome-icon-in-android-application
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
     }
 
