@@ -1,12 +1,7 @@
 package ca.bcit.comp3717project;
 
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -15,27 +10,39 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    private final String TAG = "HumbleMaps";
     private GoogleMap mMap;
     private LocationManager locationManager;
     private LocationListener locationListener;
     private float defaultZoomLevel = 10.0f;
+    private boolean animationInProgress = false;
+    private FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +80,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        // Read from the database
+        database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("restaurants");
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                String d1 = "", d2 = "";
+                for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
+                    Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
+                    d1 = restaurant.getLATITUDE();
+                    d2 = restaurant.getLONGITUDE();
+                    Log.d(TAG, "Value is: " + restaurant);
+                }
+                // Add a marker in Sydney and move the camera
+                LatLng testRestaurant = new LatLng(Double.valueOf(d1), Double.valueOf(d2));
+                addMarker2Map(testRestaurant, "Restaurant from firebase");
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+                Log.w(TAG, "Failed to read value.", error.toException());
+            }
+        });
+
+
         // Add a marker in Sydney and move the camera
         LatLng NewtonArena = new LatLng(49.1320993, -122.8420707);
         addMarker2Map(NewtonArena, "Newton Arena");
@@ -80,11 +115,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
         addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
 
-        //TODO
-        //google map is unclear, not sharp
-        //Try, but not work: https://stackoverflow.com/questions/18173912/blurry-map-tiles-at-start-of-android-app-based-on-google-maps-api-v2
-        //shift to API3?
-
+        //For unclear maps image
+        //https://github.com/react-native-community/react-native-maps/issues/69
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
     }
 
@@ -106,6 +138,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         }
     }
+
+    GoogleMap.CancelableCallback cancelableCallback = new GoogleMap.CancelableCallback() {
+        @Override
+        public void onFinish() {
+            animationInProgress = false;
+        }
+
+        @Override
+        public void onCancel() {
+            animationInProgress = false;
+        }
+    };
 
     public void onChangeMapType(View v) {
         if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL)
