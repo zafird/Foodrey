@@ -3,31 +3,40 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:background="#e5e5e5">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="100px"
+    <SearchView
+        android:id="@+id/svRestaurant"
         android:layout_alignParentTop="true"
-        android:text="Logo" />
-
-
-    <Button
-        android:id="@+id/button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="wrap_content" />
 
-        android:onClick="maps"
-        android:text="Button" />
+<!--    <TextView-->
+<!--        android:id="@+id/textView2"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="100px"-->
+<!--        android:layout_alignParentTop="true"-->
+<!--        android:text="Logo" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/button"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/textView2"-->
+<!--        android:onClick="maps"-->
+<!--        android:text="Button" />-->
 
     <ListView
-        android:id="@+id/contacts_list"
+        android:id="@+id/lvRestaurant"
         android:layout_width="match_parent"
-
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/menu_navBar"
+        android:layout_below="@+id/svRestaurant"
+        android:background="#00B62929" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/menu_navBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
