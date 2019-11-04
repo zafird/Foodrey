@@ -2,9 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    android:background="#e5e5e5">
+    android:layout_height="match_parent">
 
     <SearchView
         android:id="@+id/svRestaurant"
@@ -19,27 +17,27 @@
 <!--        android:layout_alignParentTop="true"-->
 <!--        android:text="Logo" />-->
 
-<!--    <Button-->
-<!--        android:id="@+id/button"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/textView2"-->
-<!--        android:onClick="maps"-->
-<!--        android:text="Button" />-->
+    <Button
+        android:id="@+id/btTestPlaceobj"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/svRestaurant"
+        android:text="Button" />
 
     <ListView
         android:id="@+id/lvRestaurant"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/menu_navBar"
-        android:layout_below="@+id/svRestaurant"
-        android:background="#00B62929" />
+        android:layout_below="@+id/btTestPlaceobj" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/menu_navBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/primaryLightColor"
         android:layout_alignParentBottom="true"
+        app:itemTextColor="@color/primaryTextColor"
         app:menu="@menu/bottom_navigation" />
 
 </RelativeLayout>
