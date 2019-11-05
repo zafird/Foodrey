@@ -1,38 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#e5e5e5"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView2"
+    <SearchView
+        android:id="@+id/svRestaurant"
+        android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="100px"
-        android:gravity="center|center_vertical"
-        android:text="Logo" />
-
-<!--    <android.support.v7.widget.SearchView-->
-<!--        android:id="@+id/cercaEvento"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:padding="8dp"-->
-<!--        android:queryHint="Evento" />-->
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="maps"
-        android:text="Button" />
+        android:layout_height="wrap_content" />
 
     <ListView
-
-        android:id="@+id/contacts_list"
+        android:id="@+id/lvRestaurant"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/menu_navBar"
+        android:layout_below="@+id/svRestaurant" />
 
-    </ListView>
-</LinearLayout>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/menu_navBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primaryLightColor"
+        android:layout_alignParentBottom="true"
+        app:itemTextColor="@color/primaryTextColor"
+        app:menu="@menu/bottom_navigation" />
+
+</RelativeLayout>

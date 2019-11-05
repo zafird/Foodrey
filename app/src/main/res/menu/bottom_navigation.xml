@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/common_google_signin_btn_text_light"
+    android:id="@+id/mBottomNav"
+    >
+    <item
+        android:title="@string/bottom_nagivagation_home"
+        android:id="@+id/iHome"
+        android:icon="@drawable/ic_home"/>
+    <item
+        android:title="@string/bottom_nagivagation_map"
+        android:id="@+id/iMap"
+        android:icon="@drawable/ic_map"/>
+    <item
+        android:title="@string/bottom_nagivagation_fav"
+        android:id="@+id/iBook"
+        android:icon="@drawable/ic_bookmark"/>
+
+</menu>
