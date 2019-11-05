@@ -21,4 +21,7 @@
     <string name="zoomOut">&#xf068;</string>
     <string name="custom">Custom Map</string>
     <string name="current_location">Current Location</string>
+    <string name="bottom_nagivagation_home">Home</string>
+    <string name="bottom_nagivagation_map">Map</string>
+    <string name="bottom_nagivagation_fav">Favourite</string>
 </resources>
