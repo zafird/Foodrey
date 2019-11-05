@@ -1,5 +1,6 @@
 package ca.bcit.comp3717project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,49 +10,49 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-    }
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.bottom_navigation, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.iHome:
-                // User chose the "Settings" item, show the app settings UI...
-                System.out.println("Menu Item Home");
-                return true;
-            case R.id.iMap:
-                // User chose the "Favorite" action, mark the current item
-                // as a favorite...
-                System.out.println("Menu Item Map");
-                goToMapActivity();
-                return true;
-            case R.id.iBook:
-                System.out.println("Menu Item Book");
-                return true;
-            default:
-                // If we got here, the user's action was not recognized.
-                // Invoke the superclass to handle it.
-                return super.onOptionsItemSelected(item);
-
-        }
+        BottomNavigationView mNavBar = findViewById(R.id.menu_navBar);
+        mNavBar.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.iHome:
+                                System.out.println("Menu Item Home");
+                                break;
+                            case R.id.iMap:
+                                System.out.println("Menu Item Map");
+                                goToMapActivity();
+                                break;
+                            case R.id.iBook:
+                                System.out.println("Menu Item Book");
+                                break;
+                            default:
+                                break;
+                        }
+                        return true;
+                    }
+                });
     }
 
-    public void goToMapActivity(){
+    private void actionMenuItems() {
+
+    }
+
+
+    private void goToMapActivity() {
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }
 
-    public void search(View view){
+    private void search(View view) {
         Intent intent = new Intent(this, Search.class);
         startActivity(intent);
     }
