@@ -19,42 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView mNavBar = findViewById(R.id.menu_navBar);
-        mNavBar.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.iHome:
-                                System.out.println("Menu Item Home");
-                                break;
-                            case R.id.iMap:
-                                System.out.println("Menu Item Map");
-                                goToMapActivity();
-                                break;
-                            case R.id.iBook:
-                                System.out.println("Menu Item Book");
-                                break;
-                            default:
-                                break;
-                        }
-                        return true;
-                    }
-                });
-    }
-
-    private void actionMenuItems() {
-
-    }
-
-
-    private void goToMapActivity() {
-        Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
-    }
-
-    private void search(View view) {
-        Intent intent = new Intent(this, Search.class);
-        startActivity(intent);
+        mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
     }
 
 }
