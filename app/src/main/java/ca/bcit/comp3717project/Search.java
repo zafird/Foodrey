@@ -44,6 +44,7 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
 //                .equalTo(restaurantName)
                 .startAt(restaurantName)
                 .endAt(restaurantName + "\uf8ff")
+                .limitToFirst(20)
                 .addValueEventListener(new ValueEventListener() {
 
             @Override
