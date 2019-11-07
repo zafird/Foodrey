@@ -49,9 +49,12 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                String prevRestaurant = "";
                 for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
                     Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
-                    arraylist.add(restaurant);
+                    if (!prevRestaurant.equals(restaurant.getNAME()))
+                        arraylist.add(restaurant);
+                    prevRestaurant = restaurant.getNAME();
                 }
             }
 
