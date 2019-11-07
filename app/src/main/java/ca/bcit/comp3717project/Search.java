@@ -41,11 +41,11 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
         String restaurantName = searchStr[0];
         // DB query : Generate relevant data
         myRef.orderByChild("NAME")
+//                .equalTo(restaurantName)
                 .startAt(restaurantName)
                 .endAt(restaurantName + "\uf8ff")
-                .limitToFirst(100);
+                .addValueEventListener(new ValueEventListener() {
 
-        myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
