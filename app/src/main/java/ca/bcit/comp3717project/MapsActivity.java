@@ -93,7 +93,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
                     d1 = restaurant.getLATITUDE();
                     d2 = restaurant.getLONGITUDE();
-                    Log.d(TAG, "Value is: " + restaurant);
                 }
                 // Add a marker in Sydney and move the camera
                 LatLng testRestaurant = new LatLng(Double.valueOf(d1), Double.valueOf(d2));

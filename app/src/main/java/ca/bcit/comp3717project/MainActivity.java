@@ -1,24 +1,34 @@
 package ca.bcit.comp3717project;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.widget.ListView;
+import android.widget.SearchView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+
+    private final String TAG = "COMP3717Main";
+    ListView list;
+    ListViewAdapter adapter;
+    SearchView editsearch;
+    String[] RestaurantNameList;
+    ArrayList<Restaurant> arraylist = new ArrayList<Restaurant>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         BottomNavigationView mNavBar = findViewById(R.id.menu_navBar);
+        list = (ListView) findViewById(R.id.lvRestaurant);
         mNavBar.setOnNavigationItemSelectedListener(
                 new BottomNavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -40,6 +50,10 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+
+        // Locate the EditText in listview_main.xml
+        editsearch = (SearchView) findViewById(R.id.svRestaurant);
+        editsearch.setOnQueryTextListener(this);
     }
 
     private void actionMenuItems() {
@@ -52,9 +66,18 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void search(View view) {
-        Intent intent = new Intent(this, Search.class);
-        startActivity(intent);
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+
+        Log.d("Search", "Query string - " + query);
+        Search task = new Search(this);
+        task.execute(query);
+
+        return false;
     }
 
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
+    }
 }

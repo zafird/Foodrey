@@ -15,8 +15,26 @@ public class Restaurant {
     private String TrackingNumber;
     private String ViolLump;
 
+    public Restaurant() {
+    }
 
-    // Getter Methods
+/*    public Restaurant(String FACTYPE, String hazardRating, String inspType, String inspectionDate, String LATITUDE, String LONGITUDE, String NAME, int numCritical, int numNonCritical, String PHYSICALADDRESS, String PHYSICALCITY, String trackingNumber, String violLump) {
+        this.FACTYPE = FACTYPE;
+        HazardRating = hazardRating;
+        InspType = inspType;
+        InspectionDate = inspectionDate;
+        this.LATITUDE = LATITUDE;
+        this.LONGITUDE = LONGITUDE;
+        this.NAME = NAME;
+        NumCritical = numCritical;
+        NumNonCritical = numNonCritical;
+        this.PHYSICALADDRESS = PHYSICALADDRESS;
+        this.PHYSICALCITY = PHYSICALCITY;
+        TrackingNumber = trackingNumber;
+        ViolLump = violLump;
+    }*/
+
+// Getter Methods
 
     public String getFACTYPE() {
         return FACTYPE;

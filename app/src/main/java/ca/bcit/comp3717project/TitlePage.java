@@ -1,29 +1,26 @@
 package ca.bcit.comp3717project;
 
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-
-import androidx.drawerlayout.widget.DrawerLayout;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.Menu;
+import com.google.android.material.snackbar.Snackbar;
 
 public class TitlePage extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    MenuItem mSearch;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +52,48 @@ public class TitlePage extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.title_page, menu);
+
+        /*//register menu
+        MenuInflater inflater=getMenuInflater();
+        inflater.inflate(R.menu.title_page,menu);
+        mSearch=menu.findItem(R.id.action_settings);
+
+        mSearch.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                Log.d("Menu", "Expanded");
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                Log.d("Menu", "Collapsed");
+                return true;
+            }
+        });
+
+        SearchView sv=(SearchView)mSearch.getActionView();
+        sv.setSubmitButtonEnabled(true);
+        sv.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                Log.d("Search", "Query string - " + query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return true;
+            }
+        });*/
+
         return true;
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {

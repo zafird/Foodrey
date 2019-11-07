@@ -8,7 +8,9 @@
         android:id="@+id/svRestaurant"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="true"
+        android:queryHint="Search Here" />
 
     <ListView
         android:id="@+id/lvRestaurant"
