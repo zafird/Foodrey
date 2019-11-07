@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
-    private final String TAG = "COMP3717Main";
+    private final String TAG = "COMP3717Main1";
     ListView list;
     ListViewAdapter adapter;
     SearchView editsearch;
