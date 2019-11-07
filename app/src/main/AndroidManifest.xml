@@ -31,13 +31,11 @@
             android:name=".MapsActivity"
             android:theme="@style/AppTheme"
             android:label="@string/title_activity_maps"></activity>
-
         <activity
-            android:name=".TitlePage"
-            android:label="@string/title_activity_title_page"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".FullView" />
-        <activity android:name=".Search" />
+            android:name=".FavouriteActivity"
+            android:theme="@style/AppTheme"
+            android:label="Favourite" />
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
