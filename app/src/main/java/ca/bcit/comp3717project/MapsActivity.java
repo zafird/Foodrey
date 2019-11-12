@@ -43,6 +43,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float defaultZoomLevel = 10.0f;
     private boolean animationInProgress = false;
     private FirebaseDatabase database;
+    private Location lastKnownLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +107,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+        onCurrentLocation();
 
         // Add a marker in Sydney and move the camera
         LatLng NewtonArena = new LatLng(49.1320993, -122.8420707);
@@ -113,7 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
         addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
-
+        findDistanceNearByRestaurant(SurreyAquatics);
         //For unclear maps image
         //https://github.com/react-native-community/react-native-maps/issues/69
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
@@ -162,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else mMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
 
-    public void onCurrentLocation(View v) {
+    public void onCurrentLocation() {
         // Zoom into users location
         locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         locationListener = new LocationListener() {
@@ -183,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             addMarker2MapDraw(lastKnownLocation, null);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
@@ -213,5 +215,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latlng = new LatLng(coordinates.latitude, coordinates.longitude);
         mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
+    }
+
+    private void findDistanceNearByRestaurant(LatLng coordinates){
+        double latX = lastKnownLocation.getLatitude();
+        double lonY = lastKnownLocation.getLongitude();
+        double dist =  Math.sqrt(Math.pow((latX - coordinates.latitude),2) +
+                Math.pow((lonY - coordinates.longitude),2));
+        System.out.println("Distance: " + dist);
+//        if(Math.sqrt(Math.pow((latX - coordinates.latitude),2) +
+//                Math.pow((lonY - coordinates.longitude),2)) < 2){
+//            addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
+//        }
     }
 }
