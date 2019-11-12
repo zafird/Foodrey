@@ -83,25 +83,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String d1 = "", d2 = "", restName = "";
+                String d1 = "";
                 for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
                         Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
                     d1 = restaurant.getLATITUDE();
-                    d2 = restaurant.getLONGITUDE();
-                    restName = restaurant.getNAME();
                     if (d1.equals("#N/A")) {
                         break;
                     }
                     RestaurantList.add(restaurant);
-
                 }
                 LatLng testRestaurant;
                 // Add a marker in Sydney and move the camera
@@ -116,32 +113,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             counter++;
                         }
                     }
-
                     if(counter > 5){
                         break;
                     }
                 }
-//                addMarker2Map(testRestaurant, "Restaurant from firebase");
             }
-
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
+        //get current location.
         onCurrentLocation();
-
         // Add a marker in Sydney and move the camera
         LatLng currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-//        addMarker2Map(NewtonArena, "Newton Arena");
-//
-//        LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
-//        addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
-//        findDistanceNearByRestaurant(SurreyAquatics);
-        //For unclear maps image
-        //https://github.com/react-native-community/react-native-maps/issues/69
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
     }
 
@@ -224,7 +210,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private float findDistanceNearByRestaurant(LatLng coordinates){
-
         double latX = lastKnownLocation.getLatitude();
         double lonY = lastKnownLocation.getLongitude();
         Location loc1 = new Location("");
@@ -234,11 +219,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Location loc2 = new Location("");
         loc2.setLatitude(coordinates.latitude);
         loc2.setLongitude(coordinates.longitude);
-        LatLng latlng = new LatLng(loc2.getLatitude(), loc2.getLongitude());
 
-        float distanceInMeters = loc1.distanceTo(loc2) / 1000;
-        System.out.println("Distance: " + distanceInMeters);
-        return distanceInMeters;
+        return loc1.distanceTo(loc2) / 1000;
 
 
     }
