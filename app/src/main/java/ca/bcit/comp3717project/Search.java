@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.BitSet;
 
 public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
 
@@ -27,6 +28,7 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
         mContext = context;
         activictyRef = new WeakReference<MainActivity>((MainActivity) context);
     }
+
 
     @Override
     protected void onPreExecute() {
@@ -47,26 +49,26 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
                 .limitToFirst(20)
                 .addValueEventListener(new ValueEventListener() {
 
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String prevRestaurant = "";
-                for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
-                    if (!prevRestaurant.equals(restaurant.getNAME()))
-                        arraylist.add(restaurant);
-                    prevRestaurant = restaurant.getNAME();
-                }
-            }
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String prevRestaurant = "";
+                        for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
+                            Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
+                            if (!prevRestaurant.equals(restaurant.getNAME()))
+                                arraylist.add(restaurant);
+                            prevRestaurant = restaurant.getNAME();
+                        }
+                    }
 
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Database unavailable", error.toException());
-                Toast t = Toast.makeText(mContext,
-                        "Database unavailable", Toast.LENGTH_SHORT);
-                t.show();
-            }
-        });
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        // Failed to read value
+                        Log.w(TAG, "Database unavailable", error.toException());
+                        Toast t = Toast.makeText(mContext,
+                                "Database unavailable", Toast.LENGTH_SHORT);
+                        t.show();
+                    }
+                });
 
         return arraylist;
     }
