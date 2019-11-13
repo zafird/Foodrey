@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -32,6 +33,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -43,10 +45,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private float defaultZoomLevel = 10.0f;
     private boolean animationInProgress = false;
     private FirebaseDatabase database;
+    private Location lastKnownLocation;
+    private List<Restaurant> RestaurantList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Read from the database
+        RestaurantList = new ArrayList<Restaurant>();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -65,8 +71,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         buttonMinus.setTypeface(font);
         buttonPlus.setTypeface(font);
     }
-
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -79,44 +83,52 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        // Read from the database
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
+
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String d1 = "", d2 = "";
+                String d1 = "";
                 for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
+                        Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
                     d1 = restaurant.getLATITUDE();
-                    d2 = restaurant.getLONGITUDE();
+                    if (d1.equals("#N/A")) {
+                        break;
+                    }
+                    RestaurantList.add(restaurant);
                 }
+                LatLng testRestaurant;
                 // Add a marker in Sydney and move the camera
-                LatLng testRestaurant = new LatLng(Double.valueOf(d1), Double.valueOf(d2));
-                addMarker2Map(testRestaurant, "Restaurant from firebase");
+                int counter = 0;
+                for(Restaurant rest : RestaurantList) {
+                    if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
+                        testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
+                                Double.valueOf(rest.getLONGITUDE()));
+                        System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
+                        if (findDistanceNearByRestaurant(testRestaurant) < 2.0) {
+                            addMarker2Map(testRestaurant, rest.getNAME());
+                            counter++;
+                        }
+                    }
+                    if(counter > 5){
+                        break;
+                    }
+                }
             }
-
             @Override
             public void onCancelled(DatabaseError error) {
                 // Failed to read value
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
-
+        //get current location.
+        onCurrentLocation();
         // Add a marker in Sydney and move the camera
-        LatLng NewtonArena = new LatLng(49.1320993, -122.8420707);
-        addMarker2Map(NewtonArena, "Newton Arena");
-
-        LatLng SurreyAquatics = new LatLng(49.1530215, -122.7639444);
-        addMarker2Map(SurreyAquatics, "Surrey Sport & Leisure Complex - Arenas");
-
-        //For unclear maps image
-        //https://github.com/react-native-community/react-native-maps/issues/69
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(NewtonArena,defaultZoomLevel));
+        LatLng currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
     }
 
     public void onSearch(View v) {
@@ -161,30 +173,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mMap.animateCamera(CameraUpdateFactory.zoomIn());
         else mMap.animateCamera(CameraUpdateFactory.zoomOut());
     }
-
-    public void onCurrentLocation(View v) {
-        // Zoom into users location
+    // get the current location
+    public void onCurrentLocation() {
         locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                addMarker2MapDraw(location, null);
-            }
-
-            @Override
-            public void onStatusChanged(String s, int i, Bundle bundle) {}
-
-            @Override
-            public void onProviderEnabled(String s) {}
-
-            @Override
-            public void onProviderDisabled(String s) {}
-        };
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,0,0,locationListener);
-            Location lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            addMarker2MapDraw(lastKnownLocation, null);
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
@@ -213,5 +207,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng latlng = new LatLng(coordinates.latitude, coordinates.longitude);
         mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
+    }
+
+    private float findDistanceNearByRestaurant(LatLng coordinates){
+        double latX = lastKnownLocation.getLatitude();
+        double lonY = lastKnownLocation.getLongitude();
+        Location loc1 = new Location("");
+        loc1.setLatitude(latX);
+        loc1.setLongitude(lonY);
+
+        Location loc2 = new Location("");
+        loc2.setLatitude(coordinates.latitude);
+        loc2.setLongitude(coordinates.longitude);
+
+        return loc1.distanceTo(loc2) / 1000;
+
+
     }
 }
