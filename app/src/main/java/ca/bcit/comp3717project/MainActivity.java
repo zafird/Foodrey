@@ -58,6 +58,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 intent.putExtra("date",res.getInspectionDate());
                 intent.putExtra("critical",res.getNumCritical());
                 intent.putExtra("noncritical",res.getNumNonCritical());
+                intent.putExtra("latitude",res.getLATITUDE());
+                intent.putExtra("longitude",res.getLONGITUDE());
                 startActivity(intent);
             }
         });
