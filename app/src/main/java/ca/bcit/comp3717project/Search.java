@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.BitSet;
 
 public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
 
@@ -27,6 +28,7 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
         mContext = context;
         activictyRef = new WeakReference<MainActivity>((MainActivity) context);
     }
+
 
     @Override
     protected void onPreExecute() {
