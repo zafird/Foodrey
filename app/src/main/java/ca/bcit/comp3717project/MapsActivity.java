@@ -108,12 +108,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
                                 Double.valueOf(rest.getLONGITUDE()));
                         System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
-                        if (findDistanceNearByRestaurant(testRestaurant) < 2.0) {
+                        if (findDistanceNearByRestaurant(testRestaurant) < 3.0) {
                             addMarker2Map(testRestaurant, rest.getNAME());
                             counter++;
                         }
                     }
-                    if(counter > 5){
+                    if(counter > 9){
                         break;
                     }
                 }
