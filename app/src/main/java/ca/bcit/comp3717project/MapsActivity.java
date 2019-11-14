@@ -34,6 +34,7 @@ import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,12 +43,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
-        GoogleMap.OnMyLocationClickListener {
+        GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private final String TAG = "HumbleMaps";
     private GoogleMap mMap;
@@ -108,6 +110,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
         //get current location.
@@ -140,10 +143,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.w(TAG, "Failed to read value.", error.toException());
             }
         });
-
+    }
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked",
+                Toast.LENGTH_SHORT).show();
     }
     private void populateMarksOnMap(int numberRest, double distanceTravel){
-
+        DecimalFormat df = new DecimalFormat("#.##");
         LatLng testRestaurant;
         String restName = "";
         double longDist = 0;
@@ -169,7 +176,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
         Toast.makeText(MapsActivity.this,
-                restName +" Distance "+  longDist,Toast.LENGTH_LONG).show();
+                restName +" Distance "+  df.format(longDist) + " km",Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -274,6 +281,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return loc1.distanceTo(loc2) / 1000;
 
     }
+
     private void showUpdateDialog(){
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
