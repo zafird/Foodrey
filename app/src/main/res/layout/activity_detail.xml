@@ -61,6 +61,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"/>
+    <CheckBox
+        android:id="@+id/favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/favorite"
+        android:onClick="onFavoriteClicked"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:paddingVertical="1sp"
+        android:textDirection="ltr"
+        android:layoutDirection="rtl"
+        android:layout_gravity="right"
+        />
+
     <fragment
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:id="@+id/map"

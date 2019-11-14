@@ -25,4 +25,5 @@
     <string name="bottom_nagivagation_map">Map</string>
     <string name="bottom_nagivagation_fav">Favourite</string>
     <string name="settings">Setting</string>
+    <string name="favorite">Favorite</string>
 </resources>
