@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Detail extends AppCompatActivity implements OnMapReadyCallback{
+public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap googleMap;
     private double latitude;

@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 Restaurant res = (Restaurant) adapterView.getItemAtPosition((int)l);
-                Intent intent = new Intent(MainActivity.this, Detail.class);
+                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
                 intent.putExtra("index", (int) l);
                 intent.putExtra("name",res.getNAME());
                 intent.putExtra("address",res.getPHYSICALADDRESS());

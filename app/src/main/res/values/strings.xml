@@ -29,4 +29,6 @@
     <string name="bike">Bike</string>
     <string name="car">Car</string>
     <string name="tvNearbyRestaurants">Distance of nearby restaurants</string>
+    <string name="number_or_restaurants">Number of restaurants</string>
+    <string name="back">Back</string>
 </resources>

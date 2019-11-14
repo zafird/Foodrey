@@ -14,11 +14,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -86,7 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View view) {
                 System.out.println("clicked");
-                showUpdateDialog();
+                showMapSettingDialog();
             }
         });
     }
@@ -149,7 +151,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         for(Restaurant r : markersRestaurantMapList){
             if(marker.getTitle().equals(r.getNAME())){
 
-                Intent intent = new Intent(MapsActivity.this, Detail.class);
+                Intent intent = new Intent(MapsActivity.this, DetailActivity.class);
                 intent.putExtra("name",r.getNAME());
                 intent.putExtra("address",r.getPHYSICALADDRESS());
                 intent.putExtra("city",r.getPHYSICALCITY());
@@ -168,17 +170,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng testRestaurant;
         String restName = "";
         double longDist = 0;
-        int counter = 0;
+        int counter = 1;
         if(markersRestaurantMapList != null){
             markersRestaurantMapList.clear();
         }
         for(Restaurant rest : RestaurantList) {
+            if(counter > numberRest){
+                break;
+            }
             if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
                 testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
                         Double.valueOf(rest.getLONGITUDE()));
 
                 if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel ) {
-                    addMarker2Map(testRestaurant, rest.getNAME(), findDistanceNearByRestaurant(testRestaurant));
+                    addMarkerMap(testRestaurant, rest.getNAME(), findDistanceNearByRestaurant(testRestaurant));
                     counter++;
                     markersRestaurantMapList.add(rest);
                     if(findDistanceNearByRestaurant(testRestaurant) > longDist){
@@ -187,9 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                 }
             }
-            if(counter > numberRest){
-                break;
-            }
+
         }
         Toast.makeText(MapsActivity.this,
                 restName +" Distance "+  df.format(longDist) + " km",Toast.LENGTH_LONG).show();
@@ -257,8 +260,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
     }
-
-    private void addMarker2Map(LatLng coordinates, String title, double dist) {
+    //add markers to the map
+    private void addMarkerMap(LatLng coordinates, String title, double dist) {
         DecimalFormat df = new DecimalFormat("#.##");
         if(title == null) {
             title = "Current Location: %4.3f Lat %4.3f Long.";
@@ -283,8 +286,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return loc1.distanceTo(loc2) / 1000;
 
     }
+    //open the dialog box
+    private void showMapSettingDialog(){
 
-    private void showUpdateDialog(){
+
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
         LayoutInflater inflater = getLayoutInflater();
@@ -292,6 +297,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final Button btnWalk = dialogView.findViewById(R.id.btnWalkMap);
         final Button btnBike = dialogView.findViewById(R.id.btnBikeMap);
         final Button btnDrive = dialogView.findViewById(R.id.btnDriveMap);
+        final EditText etNumRestaurants = dialogView.findViewById(R.id.etNumberRestaurants);
 
         dialogBuilder.setView(dialogView);
         dialogBuilder.setTitle("Map Settings");
@@ -303,39 +309,68 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(9,2);
-                mMap.addCircle(new CircleOptions()
-                        .center(currLocat)
-                        .radius(3000)
-                        .strokeColor(Color.rgb(166, 48, 199)));
-                alertDialog.dismiss();
+                int numRest;
+
+                etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
+                if(!etNumRestaurants.getText().toString().equals("")) {
+                    numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
+                    populateMarksOnMap(numRest,2);
+                    mMap.addCircle(new CircleOptions()
+                            .center(currLocat)
+                            .radius(6000)
+                            .strokeColor(Color.rgb(166, 48, 199)));
+                    alertDialog.dismiss();
+                }else{
+                    Toast.makeText(MapsActivity.this,
+                            "Please enter number of restaurants",Toast.LENGTH_LONG).show();
+                }
             }
         });
+
         btnBike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(15,4);
-                mMap.addCircle(new CircleOptions()
-                        .center(currLocat)
-                        .radius(4000)
-                        .strokeColor(Color.rgb(166, 48, 199)));
-                alertDialog.dismiss();
+                int numRest;
+
+                etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
+                if(!etNumRestaurants.getText().toString().equals("")) {
+                    numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
+                    populateMarksOnMap(numRest,4);
+                    mMap.addCircle(new CircleOptions()
+                            .center(currLocat)
+                            .radius(6000)
+                            .strokeColor(Color.rgb(166, 48, 199)));
+                    alertDialog.dismiss();
+                }else{
+                    Toast.makeText(MapsActivity.this,
+                            "Please enter number of restaurants",Toast.LENGTH_LONG).show();
+                }
             }
         });
         btnDrive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(15,6);
-                mMap.addCircle(new CircleOptions()
-                        .center(currLocat)
-                        .radius(6000)
-                        .strokeColor(Color.rgb(166, 48, 199)));
-                alertDialog.dismiss();
+                int numRest;
+
+                etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
+                if(!etNumRestaurants.getText().toString().equals("")) {
+                    numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
+                    populateMarksOnMap(numRest,6);
+                    mMap.addCircle(new CircleOptions()
+                            .center(currLocat)
+                            .radius(6000)
+                            .strokeColor(Color.rgb(166, 48, 199)));
+                    alertDialog.dismiss();
+                }else{
+                    Toast.makeText(MapsActivity.this,
+                            "Please enter number of restaurants",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
+
 }
 
 

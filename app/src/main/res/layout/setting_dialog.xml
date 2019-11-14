@@ -3,9 +3,18 @@
     android:id="@+id/GridLayout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="10dp"
     android:stretchColumns="0,1,2"
     android:orientation="vertical">
 
+    <EditText
+        android:id="@+id/etNumberRestaurants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/number_or_restaurants"
+        android:importantForAutofill="no"
+        android:inputType="number"
+        android:imeOptions="actionDone" />
 
     <TextView
         android:id="@+id/textView"
