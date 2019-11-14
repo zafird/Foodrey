@@ -20,7 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
 import android.widget.TextView;
+
+import android.widget.ListView;
+
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,10 +36,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
-import com.google.android.gms.maps.model.Marker;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -61,15 +67,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location lastKnownLocation;
     private List<Restaurant> RestaurantList;
     private Button btnSettings;
+
     private LatLng currLocat;
     private ArrayList<Restaurant> markersRestaurantMapList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Read from the database
         RestaurantList = new ArrayList<Restaurant>();
+
         markersRestaurantMapList = new ArrayList<Restaurant>();
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -83,6 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button buttonPlus = (Button)findViewById( R.id.btnZoomIn );
         buttonMinus.setTypeface(font);
         buttonPlus.setTypeface(font);
+
         btnSettings =  findViewById(R.id.btnMapSetting);
         btnSettings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +102,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 showMapSettingDialog();
             }
         });
+
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         try {
             // Customise the styling of the base map using a JSON object defined
             // in a raw resource file.
@@ -108,6 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } catch (Resources.NotFoundException e) {
             Log.e(TAG, "Can't find style. Error: ", e);
         }
+
         mMap = googleMap;
         mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationClickListener(this);
@@ -118,7 +132,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         onCurrentLocation();
 
         // Add a marker in Sydney and move the camera
+
         currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
+
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
         myRef.addValueEventListener(new ValueEventListener() {
@@ -371,8 +387,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-}
 
+}
 
 
 
