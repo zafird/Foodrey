@@ -62,6 +62,7 @@ public class ListViewAdapter extends BaseAdapter {
         // Set the results into TextViews
         holder.name.setText(restaurantList.get(position).getNAME());
         holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS());
+
         return view;
     }
 

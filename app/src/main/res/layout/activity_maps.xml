@@ -20,8 +20,10 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:id="@+id/btnSettings"
-            android:background="@color/primaryDarkColor"
+
+            android:id="@+id/btnMapSetting"
+            android:backgroundTint="@color/primaryLightColor"
+
             android:drawableTop="@drawable/ic_settings"
             android:text="@string/settings"
             android:onClick="onChangeMapType"/>

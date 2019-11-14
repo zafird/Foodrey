@@ -75,4 +75,14 @@ public class FavouriteActivity  extends AppCompatActivity {
             menuItem.setChecked(true);
         }
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Menu menu = mNavBar.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+
+        if(this.getClass().getSimpleName().equals("FavouriteActivity")){
+            menuItem.setChecked(true);
+        }
+    }
 }
