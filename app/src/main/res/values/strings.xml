@@ -25,4 +25,8 @@
     <string name="bottom_nagivagation_map">Map</string>
     <string name="bottom_nagivagation_fav">Favourite</string>
     <string name="settings">Setting</string>
+    <string name="walk">Walk</string>
+    <string name="bike">Bike</string>
+    <string name="car">Car</string>
+    <string name="tvNearbyRestaurants">Distance of nearby restaurants</string>
 </resources>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/GridLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:stretchColumns="0,1,2"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tvNearbyRestaurants" />
+
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+        <Button
+            android:id="@+id/btnWalkMap"
+            android:drawableTop="@drawable/ic_walking"
+            android:backgroundTint="@color/primaryLightColor"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/walk" />
+
+        <Button
+            android:id="@+id/btnBikeMap"
+            android:drawableTop="@drawable/ic_bike"
+            android:backgroundTint="@color/primaryLightColor"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/bike" />
+
+        <Button
+            android:id="@+id/btnDriveMap"
+            android:drawableTop="@drawable/ic_drive"
+            android:backgroundTint="@color/primaryLightColor"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/car" />
+    </TableRow>
+
+
+</TableLayout >

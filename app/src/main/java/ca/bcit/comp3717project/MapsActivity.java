@@ -1,6 +1,7 @@
 package ca.bcit.comp3717project;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
@@ -13,6 +14,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,13 +58,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location lastKnownLocation;
     private List<Restaurant> RestaurantList;
     private Button btnSettings;
+    private LatLng currLocat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Read from the database
         RestaurantList = new ArrayList<Restaurant>();
-        btnSettings = findViewById(R.id.btnSettings);
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -76,12 +79,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button buttonPlus = (Button)findViewById( R.id.btnZoomIn );
         buttonMinus.setTypeface(font);
         buttonPlus.setTypeface(font);
-//        btnSettings.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
+        btnSettings =  findViewById(R.id.btnMapSetting);
+        btnSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("clicked");
+                showUpdateDialog();
+            }
+        });
     }
 
     @Override
@@ -108,12 +113,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         onCurrentLocation();
 
         // Add a marker in Sydney and move the camera
-        LatLng currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
-
-        Circle circle = mMap.addCircle(new CircleOptions()
-                .center(currLocat)
-                .radius(3000)
-                .strokeColor(Color.RED));
+        currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
         myRef.addValueEventListener(new ValueEventListener() {
@@ -130,23 +130,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     }
                     RestaurantList.add(restaurant);
                 }
-                LatLng testRestaurant;
-                // Add a marker in Sydney and move the camera
-                int counter = 0;
-                for(Restaurant rest : RestaurantList) {
-                    if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
-                        testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
-                                Double.valueOf(rest.getLONGITUDE()));
-                        System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
-                        if (findDistanceNearByRestaurant(testRestaurant) < 3.0) {
-                            addMarker2Map(testRestaurant, rest.getNAME());
-                            counter++;
-                        }
-                    }
-                    if(counter > 9){
-                        break;
-                    }
-                }
+
+                populateMarksOnMap(9,3);
             }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -156,11 +141,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+    private void populateMarksOnMap(int numberRest, double distanceTravel){
+
+        LatLng testRestaurant;
+        int counter = 0;
+        for(Restaurant rest : RestaurantList) {
+            if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
+                testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
+                        Double.valueOf(rest.getLONGITUDE()));
+                System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
+                if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel) {
+                    addMarker2Map(testRestaurant, rest.getNAME());
+                    counter++;
+                }
+            }
+            if(counter > numberRest){
+                break;
+            }
+        }
+    }
+
     @Override
     public boolean onMyLocationButtonClick() {
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
         return false;
     }
     @Override
@@ -259,7 +262,58 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         return loc1.distanceTo(loc2) / 1000;
 
+    }
+    private void showUpdateDialog(){
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
+        LayoutInflater inflater = getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.setting_dialog, null);
+        final Button btnWalk = dialogView.findViewById(R.id.btnWalkMap);
+        final Button btnBike = dialogView.findViewById(R.id.btnBikeMap);
+        final Button btnDrive = dialogView.findViewById(R.id.btnDriveMap);
+
+        dialogBuilder.setView(dialogView);
+        dialogBuilder.setTitle("Map Settings");
+
+        final AlertDialog alertDialog = dialogBuilder.create();
+        alertDialog.show();
+
+        btnWalk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                populateMarksOnMap(9,3);
+                mMap.addCircle(new CircleOptions()
+                        .center(currLocat)
+                        .radius(3000)
+                        .strokeColor(Color.RED));
+                alertDialog.dismiss();
+            }
+        });
+        btnBike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                populateMarksOnMap(15,6);
+                mMap.addCircle(new CircleOptions()
+                        .center(currLocat)
+                        .radius(6000)
+                        .strokeColor(Color.RED));
+                alertDialog.dismiss();
+            }
+        });
+        btnDrive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMap.clear();
+                populateMarksOnMap(15,9);
+                mMap.addCircle(new CircleOptions()
+                        .center(currLocat)
+                        .radius(6000)
+                        .strokeColor(Color.RED));
+                alertDialog.dismiss();
+            }
+        });
     }
 }
 
