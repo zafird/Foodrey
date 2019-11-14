@@ -71,14 +71,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private LatLng currLocat;
     private ArrayList<Restaurant> markersRestaurantMapList;
+//    private ArrayList<Restaurant> listRest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Read from the database
-        RestaurantList = new ArrayList<Restaurant>();
-
+        RestaurantList = MainActivity.restaurantList;
+//        listRest = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         markersRestaurantMapList = new ArrayList<Restaurant>();
 
         setContentView(R.layout.activity_maps);
@@ -126,29 +127,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                String d1 = "";
-                for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
-                    d1 = restaurant.getLATITUDE();
-                    if (d1.equals("#N/A")) {
-                        break;
-                    }
-                    RestaurantList.add(restaurant);
-                }
+        populateMarksOnMap(9, 2);
 
-                populateMarksOnMap(9,2);
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-                Log.w(TAG, "Failed to read value.", error.toException());
-            }
-        });
     }
     @Override
     public void onInfoWindowClick(Marker marker) {

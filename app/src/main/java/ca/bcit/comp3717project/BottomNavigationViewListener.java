@@ -2,12 +2,15 @@ package ca.bcit.comp3717project;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import androidx.annotation.NonNull;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.ArrayList;
 
 public class BottomNavigationViewListener implements BottomNavigationView.OnNavigationItemSelectedListener {
     private Context originalContext;
@@ -61,6 +64,10 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
 
     private void goToMapActivity() {
         Intent intent = new Intent(originalContext, MapsActivity.class);
+//        Bundle informacion = new Bundle();
+//        ArrayList<Restaurant> rest = new ArrayList<>();
+//        informacion.putSerializable("listRest", restList);
+//        intent.putExtras(informacion);
         originalContext.startActivity(intent);
     }
 

@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ListViewAdapter adapter;
     private SearchView editsearch;
     private String[] RestaurantNameList;
-    private ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
+    public static ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     private ListView list_rest;
 
     @Override
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onStart() {
         super.onStart();
-        dbRef.addValueEventListener(new ValueEventListener() {
+        dbRef.limitToFirst(200).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 restaurantList.clear();

@@ -21,11 +21,13 @@ import java.util.HashMap;
 public class FavouriteActivity  extends AppCompatActivity {
     private BottomNavigationView mNavBar;
     private SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
+    private ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
         mNavBar = findViewById(R.id.menu_navBar);
+        restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         SQLiteOpenHelper db = new MyFoodreyDbHelper(this);
 
