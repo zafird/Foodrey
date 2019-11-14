@@ -78,7 +78,7 @@ public class Search extends AsyncTask<String, Void, ArrayList<Restaurant>> {
         super.onPostExecute(arraylist);
         ListViewAdapter adapter = new ListViewAdapter(mContext, arraylist);
         MainActivity a = activictyRef.get();
-        a.list.setAdapter(adapter);
+        a.list_rest.setAdapter(adapter);
 //        ListView list = (ListView) findViewById(R.id.lvRestaurant);
 //        list.setAdapter(adapter);
     }

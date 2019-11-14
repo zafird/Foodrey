@@ -27,12 +27,11 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
-    ListView list;
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
     ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
-    private ListView list_rest;
+    ListView list_rest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +39,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setContentView(R.layout.activity_main);
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
         BottomNavigationView mNavBar = findViewById(R.id.menu_navBar);
-        list = (ListView) findViewById(R.id.lvRestaurant);
+        list_rest = findViewById(R.id.lvRestaurant);
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         editsearch = (SearchView) findViewById(R.id.svRestaurant);
         editsearch.setOnQueryTextListener(this);
 
-        list_rest = findViewById(R.id.lvRestaurant);
         list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

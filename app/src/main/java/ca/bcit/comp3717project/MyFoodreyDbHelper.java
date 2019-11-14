@@ -14,7 +14,7 @@ import java.util.HashMap;
 
 public class MyFoodreyDbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "MyFoodrey.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 4;
     private Context context;
 
     public MyFoodreyDbHelper(Context context) {
@@ -38,8 +38,21 @@ public class MyFoodreyDbHelper extends SQLiteOpenHelper {
             if (oldVersion < 1) {
                 db.execSQL(getCreateFavoritesTableSql());
             }
-            if (oldVersion < 2)
+            if (oldVersion < 2) {
                 db.execSQL("ALTER TABLE Favorite ADD COLUMN CREATED_AT NUMERIC;");
+            }
+            if (oldVersion < 3) {
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN HazardRating TEXT;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN InspectionDate TEXT;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN NumCritical NUMERIC;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN NumNonCritical NUMERIC;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN LATITUDE TEXT;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN LONGITUDE TEXT;");
+            }
+            if (oldVersion < 4) {
+                db.execSQL(getCreateSettingTableSql());
+            }
+
         } catch (SQLException sqle) {
             String msg = "[DB unavailable]";
             msg += "\n\n" + sqle.toString();
@@ -48,20 +61,34 @@ public class MyFoodreyDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    private void insertFavorite(SQLiteDatabase db, Restaurant r) {
+    public void insertFavorite(SQLiteDatabase db, Restaurant r) {
         ContentValues values = new ContentValues();
         values.put("RESTAURANT", r.getNAME());
         values.put("CITY", r.getPHYSICALCITY());
         values.put("ADDRESS", r.getPHYSICALADDRESS());
-//        values.put("CREATED_AT", Calendar.getInstance().getTime().toString());
+        values.put("CREATED_AT", Calendar.getInstance().getTime().toString());
+        values.put("HazardRating", r.getHazardRating());
+        values.put("InspectionDate", r.getInspectionDate());
+        values.put("NumCritical", r.getNumCritical());
+        values.put("NumNonCritical", r.getNumNonCritical());
+        values.put("LATITUDE", r.getLATITUDE());
+        values.put("LONGITUDE", r.getLONGITUDE());
 
         db.insert("Favorite", null, values);
     }
 
 
+    private String getCreateSettingTableSql() {
+        String sql = "";
+        sql += "CREATE TABLE IF NOT EXISTS Setting (";
+        sql += "DB_VERSION NUMERIC);";
+
+        return sql;
+    }
+
     private String getCreateFavoritesTableSql() {
         String sql = "";
-        sql += "CREATE TABLE Favorite (";
+        sql += "CREATE TABLE IF NOT EXISTS Favorite (";
         sql += "_id INTEGER PRIMARY KEY AUTOINCREMENT, ";
         sql += "RESTAURANT TEXT, ";
         sql += "CITY TEXT, ";

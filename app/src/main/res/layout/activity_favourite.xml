@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <SearchView
-        android:id="@+id/svRestaurant"
+        android:id="@+id/svFavRestaurant"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/menu_navBar"
-        android:layout_below="@+id/svRestaurant" />
+        android:layout_below="@+id/svFavRestaurant" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/menu_navBar"
