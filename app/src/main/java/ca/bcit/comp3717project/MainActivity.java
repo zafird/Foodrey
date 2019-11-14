@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onRestart();
         Menu menu = mNavBar.getMenu();
         MenuItem menuItem = menu.getItem(0);
-        System.out.println("1011"+this.getClass().getSimpleName().equals("MainActivity"));
+
         if(this.getClass().getSimpleName().equals("MainActivity")){
             menuItem.setChecked(true);
         }

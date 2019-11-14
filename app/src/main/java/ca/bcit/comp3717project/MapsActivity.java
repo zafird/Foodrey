@@ -3,6 +3,7 @@ package ca.bcit.comp3717project;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -18,7 +19,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,7 +30,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -46,7 +45,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -62,13 +60,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private List<Restaurant> RestaurantList;
     private Button btnSettings;
     private LatLng currLocat;
+    private ArrayList<Restaurant> markersRestaurantMapList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Read from the database
         RestaurantList = new ArrayList<Restaurant>();
-
+        markersRestaurantMapList = new ArrayList<Restaurant>();
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -146,8 +145,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     @Override
     public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(this, "Info window clicked",
-                Toast.LENGTH_SHORT).show();
+        System.out.println("marker info: "+marker);
+        for(Restaurant r : markersRestaurantMapList){
+            if(marker.getTitle().equals(r.getNAME())){
+
+                Intent intent = new Intent(MapsActivity.this, Detail.class);
+                intent.putExtra("name",r.getNAME());
+                intent.putExtra("address",r.getPHYSICALADDRESS());
+                intent.putExtra("city",r.getPHYSICALCITY());
+                intent.putExtra("rating",r.getHazardRating());
+                intent.putExtra("date",r.getInspectionDate());
+                intent.putExtra("critical",r.getNumCritical());
+                intent.putExtra("noncritical",r.getNumNonCritical());
+                intent.putExtra("latitude",r.getLATITUDE());
+                intent.putExtra("longitude",r.getLONGITUDE());
+                startActivity(intent);
+            }
+        }
     }
     private void populateMarksOnMap(int numberRest, double distanceTravel){
         DecimalFormat df = new DecimalFormat("#.##");
@@ -155,21 +169,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String restName = "";
         double longDist = 0;
         int counter = 0;
+        if(markersRestaurantMapList != null){
+            markersRestaurantMapList.clear();
+        }
         for(Restaurant rest : RestaurantList) {
             if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
                 testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
                         Double.valueOf(rest.getLONGITUDE()));
-                System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
 
                 if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel ) {
-                    addMarker2Map(testRestaurant, rest.getNAME());
+                    addMarker2Map(testRestaurant, rest.getNAME(), findDistanceNearByRestaurant(testRestaurant));
                     counter++;
+                    markersRestaurantMapList.add(rest);
                     if(findDistanceNearByRestaurant(testRestaurant) > longDist){
                         longDist = findDistanceNearByRestaurant(testRestaurant);
                         restName = rest.getNAME();
                     }
                 }
-
             }
             if(counter > numberRest){
                 break;
@@ -242,29 +258,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    private void addMarker2MapDraw(Location location, String title) {
-
-        if(title == null) {
-            title = "Current Location: %4.3f Lat %4.3f Long.";
-        }
-        String msg = String.format(title,
-                location.getLatitude(),
-                location.getLongitude());
-
-        LatLng latlng = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng,defaultZoomLevel));
-    }
-
-    private void addMarker2Map(LatLng coordinates, String title) {
-
+    private void addMarker2Map(LatLng coordinates, String title, double dist) {
+        DecimalFormat df = new DecimalFormat("#.##");
         if(title == null) {
             title = "Current Location: %4.3f Lat %4.3f Long.";
         }
         String msg = String.format(title, coordinates.latitude, coordinates.longitude);
 
         LatLng latlng = new LatLng(coordinates.latitude, coordinates.longitude);
-        mMap.addMarker(new MarkerOptions().position(latlng).title(msg));
+        mMap.addMarker(new MarkerOptions().position(latlng).title(msg).snippet(df.format(dist) + " km"));
     }
 
     private float findDistanceNearByRestaurant(LatLng coordinates){
