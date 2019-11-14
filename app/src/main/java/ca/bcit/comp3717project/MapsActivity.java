@@ -124,13 +124,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 //        }
 
         mMap = googleMap;
-        mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationClickListener(this);
+        onCurrentLocation();
+        mMap.setMyLocationEnabled(true);
+
         mMap.setOnInfoWindowClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
         //get current location.
-        onCurrentLocation();
+
 
         // Add a marker in Sydney and move the camera
 
@@ -269,9 +271,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // get the current location
     public void onCurrentLocation() {
-        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
             lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
