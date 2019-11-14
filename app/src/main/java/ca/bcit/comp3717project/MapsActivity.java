@@ -76,12 +76,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Button buttonPlus = (Button)findViewById( R.id.btnZoomIn );
         buttonMinus.setTypeface(font);
         buttonPlus.setTypeface(font);
-        btnSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        btnSettings.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
     }
 
     @Override
