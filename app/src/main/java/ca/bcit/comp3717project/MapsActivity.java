@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -54,12 +55,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FirebaseDatabase database;
     private Location lastKnownLocation;
     private List<Restaurant> RestaurantList;
+    private Button btnSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Read from the database
         RestaurantList = new ArrayList<Restaurant>();
+        btnSettings = findViewById(R.id.btnSettings);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -68,25 +71,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             mapFragment.getMapAsync(this);
         }
 
-        //TODO
-        //Tried : https://stackoverflow.com/questions/37959751/how-to-use-font-awesome-icon-in-android-application
-        //Result: Using fontawesome class is not working with view.inflate.Exception
-        //Instead fontawesome button style
         Typeface font = Typeface.createFromAsset( getAssets(), "fontawesome-webfont.ttf" );
         Button buttonMinus = (Button)findViewById( R.id.btnZoomOut );
         Button buttonPlus = (Button)findViewById( R.id.btnZoomIn );
         buttonMinus.setTypeface(font);
         buttonPlus.setTypeface(font);
+//        btnSettings.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
     }
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         try {
@@ -126,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 // whenever data at this location is updated.
                 String d1 = "";
                 for (DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
-                        Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
+                    Restaurant restaurant = restaurantSnapshot.getValue(Restaurant.class);
                     d1 = restaurant.getLATITUDE();
                     if (d1.equals("#N/A")) {
                         break;
@@ -173,7 +170,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void onSearch(View v) {
         List<Address> addressList = null;
-        EditText editTextLocation = (EditText) findViewById(R.id.editTextLocation);
+        EditText editTextLocation = (EditText) findViewById(R.id.svRestaurant);
         String location = editTextLocation.getText().toString();
         if (location != null && location != "") {
             Geocoder geocoder = new Geocoder(this);
@@ -265,3 +262,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
