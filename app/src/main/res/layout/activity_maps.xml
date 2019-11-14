@@ -62,15 +62,15 @@
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
                 android:onClick="onZoom"/>
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:paddingLeft="10dp"
-                android:src="@drawable/current_location"
-                android:contentDescription="@string/current_location"
-                android:onClick="onCurrentLocation"
-                android:layout_gravity="center_vertical"
-                />
+<!--            <ImageView-->
+<!--                android:layout_width="25dp"-->
+<!--                android:layout_height="25dp"-->
+<!--                android:paddingLeft="10dp"-->
+<!--                android:src="@drawable/current_location"-->
+<!--                android:contentDescription="@string/current_location"-->
+<!--                android:onClick="onCurrentLocation"-->
+<!--                android:layout_gravity="center_vertical"-->
+<!--                />-->
         </LinearLayout>
     </fragment>
 
