@@ -109,25 +109,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
 
-//        try {
-//            // Customise the styling of the base map using a JSON object defined
-//            // in a raw resource file.
-//            boolean success = googleMap.setMapStyle(
-//                    MapStyleOptions.loadRawResourceStyle(
-//                            this, R.raw.mapstyle));
-//
-//            if (!success) {
-//                Log.e(TAG, "Style parsing failed.");
-//            }
-//        } catch (Resources.NotFoundException e) {
-//            Log.e(TAG, "Can't find style. Error: ", e);
-//        }
-
         mMap = googleMap;
+
+        mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationClickListener(this);
         onCurrentLocation();
-        mMap.setMyLocationEnabled(true);
-
         mMap.setOnInfoWindowClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
@@ -155,7 +141,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     RestaurantList.add(restaurant);
                 }
 
-                populateMarksOnMap(9,3);
+                populateMarksOnMap(9,2);
             }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -337,7 +323,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     populateMarksOnMap(numRest,2);
                     mMap.addCircle(new CircleOptions()
                             .center(currLocat)
-                            .radius(6000)
+                            .radius(2000)
                             .strokeColor(Color.rgb(166, 48, 199)));
                     alertDialog.dismiss();
                 }else{
@@ -359,7 +345,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     populateMarksOnMap(numRest,4);
                     mMap.addCircle(new CircleOptions()
                             .center(currLocat)
-                            .radius(6000)
+                            .radius(4000)
                             .strokeColor(Color.rgb(166, 48, 199)));
                     alertDialog.dismiss();
                 }else{
