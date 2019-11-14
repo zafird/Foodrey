@@ -1,38 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/editTextLocation"/>
+    android:layout_height="match_parent">
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
+        <SearchView
+            android:id="@+id/svRestaurant"
+            android:layout_width="0dp"
+            android:layout_weight="0.75"
+            android:layout_height="wrap_content"
+            android:iconifiedByDefault="true"
+            android:queryHint="Search Here" />
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnSearch"
-            android:layout_gravity="right"
-            android:text="@string/search"
-            android:onClick="onSearch"/>
+            android:layout_height="match_parent"
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btnChangeMapType"
-            android:text="@string/mapType"
+            android:id="@+id/btnMapSetting"
+            android:backgroundTint="@color/primaryLightColor"
+
+            android:drawableTop="@drawable/ic_settings"
+            android:text="@string/settings"
             android:onClick="onChangeMapType"/>
-    </LinearLayout>
+    </TableRow>
     <fragment
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
@@ -62,16 +58,6 @@
                 android:layout_gravity="center_vertical"
                 android:background="@android:color/transparent"
                 android:onClick="onZoom"/>
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:paddingLeft="10dp"
-                android:src="@drawable/current_location"
-                android:contentDescription="@string/current_location"
-                android:onClick="onCurrentLocation"
-                android:layout_gravity="center_vertical"
-                />
         </LinearLayout>
     </fragment>
-
-</LinearLayout>
+</TableLayout>

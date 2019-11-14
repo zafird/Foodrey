@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">COMP3717Project</string>
+    <string name="app_name">Foodrey</string>
     <string name="title_activity_title_page">TitlePage</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -24,4 +24,13 @@
     <string name="bottom_nagivagation_home">Home</string>
     <string name="bottom_nagivagation_map">Map</string>
     <string name="bottom_nagivagation_fav">Favourite</string>
+    <string name="settings">Setting</string>
+
+    <string name="walk">Walk</string>
+    <string name="bike">Bike</string>
+    <string name="car">Car</string>
+    <string name="tvNearbyRestaurants">Distance of nearby restaurants</string>
+    <string name="number_or_restaurants">Number of restaurants</string>
+    <string name="back">Back</string>
+
 </resources>

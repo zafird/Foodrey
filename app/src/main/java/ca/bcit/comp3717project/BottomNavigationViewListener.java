@@ -28,6 +28,9 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
         }else if(originalContext.getClass().getSimpleName().equals("FavouriteActivity")){
             menuItem = menu.getItem(2);
             menuItem.setChecked(true);
+        }else if(originalContext.getClass().getSimpleName().equals("MapsActivity")){
+            menuItem = menu.getItem(1);
+            menuItem.setChecked(true);
         }
     }
 
@@ -36,18 +39,13 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
         menuItem.setChecked(true);
             switch (menuItem.getItemId()) {
                 case R.id.iHome:
-                    System.out.println("Menu Item Home");
-                    System.out.println("Woor"+originalContext.getClass().getSimpleName());
                     if(!originalContext.getClass().getSimpleName().equals("MainActivity"))
                         goToMainActivity();
                     break;
                 case R.id.iMap:
-                    System.out.println("Menu Item Map");
                     goToMapActivity();
                     break;
                 case R.id.iBook:
-                    System.out.println("Menu Item Book");
-                    System.out.println("Woor"+originalContext.getClass().getSimpleName());
                     if(!originalContext.getClass().getSimpleName().equals("FavouriteActivity"))
                         goToFavouriteActivity();
                     break;
