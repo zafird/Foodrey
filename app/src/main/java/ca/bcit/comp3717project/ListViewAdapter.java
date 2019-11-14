@@ -29,6 +29,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     public class ViewHolder {
         TextView name;
+        TextView address;
     }
 
     @Override
@@ -53,12 +54,14 @@ public class ListViewAdapter extends BaseAdapter {
             view = inflater.inflate(R.layout.list_layout, null);
             // Locate the TextViews in listview_item.xml
             holder.name = (TextView) view.findViewById(R.id.restaurantName);
+            holder.address= (TextView) view.findViewById(R.id.textAddress);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
         }
         // Set the results into TextViews
         holder.name.setText(restaurantList.get(position).getNAME());
+        holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS());
 
         return view;
     }
