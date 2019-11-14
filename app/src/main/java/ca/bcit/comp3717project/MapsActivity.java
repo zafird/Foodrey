@@ -85,13 +85,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setOnMyLocationClickListener(this);
+        onCurrentLocation();
         mMap.setMyLocationEnabled(true);
 //        mMap.setOnMyLocationButtonClickListener(this);
-        mMap.setOnMyLocationClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
         //get current location.
-        onCurrentLocation();
 //        mMap.getMyLocation();
         // Add a marker in Sydney and move the camera
         LatLng currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
@@ -193,9 +193,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // get the current location
     public void onCurrentLocation() {
-        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
             lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
