@@ -3,13 +3,20 @@ package ca.bcit.comp3717project;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ListActivity;
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -20,14 +27,19 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap googleMap;
     private double latitude;
-    private  double longitude;
+    private double longitude;
     private float defaultZoomLevel = 10.0f;
+    private SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
+    private String restaurantName;
+    private String restaurantAddress;
+    private String restaurantCity;
 
 
     @Override
@@ -38,9 +50,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         ArrayAdapter<Restaurant> arrayAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1);
 
-        String restaurantName = (String) Objects.requireNonNull(getIntent().getExtras()).getString("name");
-        String restaurantAddress = (String) Objects.requireNonNull(getIntent().getExtras()).getString("address");
-        String restaurantCity = (String) Objects.requireNonNull(getIntent().getExtras()).getString("city");
+        restaurantName = (String) Objects.requireNonNull(getIntent().getExtras()).getString("name");
+        restaurantAddress = (String) Objects.requireNonNull(getIntent().getExtras()).getString("address");
+        restaurantCity = (String) Objects.requireNonNull(getIntent().getExtras()).getString("city");
         String restaurantHazard = "Hazard Rating: "
                 + (String) Objects.requireNonNull(getIntent().getExtras()).getString("rating");
         String restaurantDate = "Date Inspected: " +
@@ -52,10 +64,12 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         TextView name = findViewById(R.id.name);
         TextView address = findViewById(R.id.address);
         TextView city = findViewById(R.id.city);
+        SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
         TextView rating = findViewById(R.id.rating);
         TextView date = findViewById(R.id.date);
         TextView critical = findViewById(R.id.critical);
         TextView noncritical = findViewById(R.id.noncritical);
+        CheckBox favCheckbox = findViewById(R.id.favorite);
 
         name.setText(restaurantName);
         address.setText(restaurantAddress);
@@ -81,6 +95,24 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
         longitude = Double.parseDouble(Objects.requireNonNull(Objects.requireNonNull(getIntent()
                 .getExtras()).getString("longitude")));
+
+        try {
+            SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+            Cursor cursor = sqliteDb.query("Favorite",
+                    new String[] {"Restaurant"},
+                    "Restaurant = ?",
+                    new String[] {restaurantName},
+                    null, null, null);
+
+            // move to the first record
+            if (cursor.moveToFirst()) {
+                // get the country details from the cursor
+                favCheckbox.setChecked(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -100,5 +132,30 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         googleMap.setIndoorEnabled(true);
         googleMap.setBuildingsEnabled(true);
         googleMap.getUiSettings().setZoomControlsEnabled(true);
+    }
+
+    public void onFavoriteClicked(View view) {
+        // set the Favorite CheckBox value
+        CheckBox fav = findViewById(R.id.favorite);
+        SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+        try {
+            if(fav.isChecked()) {
+                ContentValues values = new ContentValues();
+                values.put("RESTAURANT", restaurantName);
+                values.put("CITY", restaurantCity);
+                values.put("ADDRESS", restaurantAddress);
+                values.put("CREATED_AT", Calendar.getInstance().getTimeInMillis());
+
+                sqliteDb.insert("Favorite", null, values);
+            } else {
+                sqliteDb.execSQL("DELETE FROM Favorite WHERE RESTAURANT = '"+restaurantName+"';");
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[DB unavailable]";
+            msg += "\n\n" + sqlex.toString();
+
+            Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            t.show();
+        }
     }
 }

@@ -14,6 +14,7 @@ public class Restaurant {
     private String PHYSICALCITY;
     private String TrackingNumber;
     private String ViolLump;
+    private boolean _favorite;
 
     public Restaurant() {
     }
@@ -141,4 +142,6 @@ public class Restaurant {
     public void setViolLump(String ViolLump) {
         this.ViolLump = ViolLump;
     }
+
+    public boolean is_favorite() { return _favorite; }
 }
