@@ -44,6 +44,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener {
@@ -144,21 +145,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void populateMarksOnMap(int numberRest, double distanceTravel){
 
         LatLng testRestaurant;
+        String restName = "";
+        double longDist = 0;
         int counter = 0;
         for(Restaurant rest : RestaurantList) {
             if (rest.getLATITUDE() != "#N/A" || rest.getLONGITUDE() != "#N/A" || rest.getNAME() != "#N/A") {
                 testRestaurant = new LatLng(Double.valueOf(rest.getLATITUDE()),
                         Double.valueOf(rest.getLONGITUDE()));
                 System.out.println("Distance" + findDistanceNearByRestaurant(testRestaurant));
-                if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel) {
+
+                if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel ) {
                     addMarker2Map(testRestaurant, rest.getNAME());
                     counter++;
+                    if(findDistanceNearByRestaurant(testRestaurant) > longDist){
+                        longDist = findDistanceNearByRestaurant(testRestaurant);
+                        restName = rest.getNAME();
+                    }
                 }
+
             }
             if(counter > numberRest){
                 break;
             }
         }
+        Toast.makeText(MapsActivity.this,
+                restName +" Distance "+  longDist,Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -282,11 +293,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(9,3);
+                populateMarksOnMap(9,2);
                 mMap.addCircle(new CircleOptions()
                         .center(currLocat)
                         .radius(3000)
-                        .strokeColor(Color.RED));
+                        .strokeColor(Color.rgb(166, 48, 199)));
                 alertDialog.dismiss();
             }
         });
@@ -294,11 +305,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(15,6);
+                populateMarksOnMap(15,4);
                 mMap.addCircle(new CircleOptions()
                         .center(currLocat)
-                        .radius(6000)
-                        .strokeColor(Color.RED));
+                        .radius(4000)
+                        .strokeColor(Color.rgb(166, 48, 199)));
                 alertDialog.dismiss();
             }
         });
@@ -306,11 +317,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 mMap.clear();
-                populateMarksOnMap(15,9);
+                populateMarksOnMap(15,6);
                 mMap.addCircle(new CircleOptions()
                         .center(currLocat)
                         .radius(6000)
-                        .strokeColor(Color.RED));
+                        .strokeColor(Color.rgb(166, 48, 199)));
                 alertDialog.dismiss();
             }
         });
