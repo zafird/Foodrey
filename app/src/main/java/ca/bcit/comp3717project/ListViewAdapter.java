@@ -33,7 +33,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 30;
+        return restaurantList.size();
     }
 
     @Override
