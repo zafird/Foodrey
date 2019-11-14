@@ -27,11 +27,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
+    private BottomNavigationView mNavBar;
     ListView list;
-    ListViewAdapter adapter;
-    SearchView editsearch;
-    String[] RestaurantNameList;
-    ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
+    private ListViewAdapter adapter;
+    private SearchView editsearch;
+    private String[] RestaurantNameList;
+    private ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     private ListView list_rest;
 
     @Override
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
-        BottomNavigationView mNavBar = findViewById(R.id.menu_navBar);
+        mNavBar = findViewById(R.id.menu_navBar);
         list = (ListView) findViewById(R.id.lvRestaurant);
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         editsearch = (SearchView) findViewById(R.id.svRestaurant);
@@ -88,8 +89,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
+
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Menu menu = mNavBar.getMenu();
+        MenuItem menuItem = menu.getItem(0);
+        System.out.println("1011"+this.getClass().getSimpleName().equals("MainActivity"));
+        if(this.getClass().getSimpleName().equals("MainActivity")){
+            menuItem.setChecked(true);
+        }
+    }
 
     @Override
     public boolean onQueryTextSubmit(String query) {
