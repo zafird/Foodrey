@@ -28,11 +28,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
+
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
     ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     ListView list_rest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onStart() {
         super.onStart();
-        dbRef.addValueEventListener(new ValueEventListener() {
+        dbRef.limitToFirst(200).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 restaurantList.clear();

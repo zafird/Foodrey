@@ -25,14 +25,17 @@ import java.util.HashMap;
 
 public class FavouriteActivity  extends AppCompatActivity {
     private BottomNavigationView mNavBar;
+
     private SearchView editsearch;
     private ArrayList<Restaurant> restaurantList;
     private SQLiteOpenHelper helper;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
         mNavBar = findViewById(R.id.menu_navBar);
+        restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         helper = new MyFoodreyDbHelper(this);
         ListView lv = (ListView) findViewById(R.id.lvRestaurant);
