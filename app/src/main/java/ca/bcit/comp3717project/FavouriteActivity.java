@@ -44,14 +44,7 @@ public class FavouriteActivity  extends AppCompatActivity {
             ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restaurantList);
             //ListAdapter adapter = new SimpleAdapter(FavouriteActivity.this, restaurantList, R.layout.list_row,new String[]{"name","city","address"}, new int[]{R.id.name, R.id.city, R.id.address});
             lv.setAdapter(adapter);
-//            Button back = (Button)findViewById(R.id.btnBack);
-//            back.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    intent = new Intent(DetailsActivity.this,MainActivity.class);
-//                    startActivity(intent);
-//                }
-//            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

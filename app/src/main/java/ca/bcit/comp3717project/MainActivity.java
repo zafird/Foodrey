@@ -4,6 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -39,8 +42,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
-        mNavBar = findViewById(R.id.menu_navBar);
         list_rest = findViewById(R.id.lvRestaurant);
+        mNavBar = findViewById(R.id.menu_navBar);
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         editsearch = (SearchView) findViewById(R.id.svRestaurant);
         editsearch.setOnQueryTextListener(this);
@@ -69,24 +72,57 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onStart() {
         super.onStart();
-        dbRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                restaurantList.clear();
-                for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
-                    Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
-                    if (!restaurant.getNAME().equals("#N/A")) {
-                        restaurantList.add(restaurant);
+
+        SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
+        SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+        String query = "SELECT count(*) cnt FROM Setting";
+        Cursor cursor = sqliteDb.rawQuery(query,null);
+        cursor.moveToNext();
+        int cnt = cursor.getColumnIndex("cnt");
+
+        if(cnt > 0 ) {
+
+            dbRef.limitToFirst(200).addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    restaurantList.clear();
+                    for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
+                        Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
+                        if (!restaurant.getNAME().equals("#N/A")) {
+                            restaurantList.add(restaurant);
+                        }
                     }
+
+                    ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
+                    list_rest.setAdapter(adapter);
                 }
 
-                ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
-                list_rest.setAdapter(adapter);
-            }
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) { }
-        });
+        } else {
+
+            dbRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    restaurantList.clear();
+                    for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
+                        Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
+                        if (!restaurant.getNAME().equals("#N/A")) {
+                            restaurantList.add(restaurant);
+                        }
+                    }
+
+                    ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
+                    list_rest.setAdapter(adapter);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) { }
+            });
+        }
+
     }
 
     @Override

@@ -1,6 +1,9 @@
 package ca.bcit.comp3717project;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +28,16 @@ public class ListViewAdapter extends BaseAdapter {
         inflater = LayoutInflater.from(mContext);
         this.arraylist = new ArrayList<Restaurant>();
         this.arraylist.addAll(restaurantList);
+    }
+
+    public ListViewAdapter(Context context, List<Restaurant> restaurantList, boolean dataInit) {
+        this(context, restaurantList);
+
+        if(dataInit) {
+            SQLiteOpenHelper helper = new MyFoodreyDbHelper(mContext);
+            SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+            ((MyFoodreyDbHelper)helper).getSyncFirebaseDB(sqliteDb, (ArrayList<Restaurant>) restaurantList);
+        }
     }
 
     public class ViewHolder {
