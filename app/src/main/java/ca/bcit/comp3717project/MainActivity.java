@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
-
+    private SQLiteOpenHelper helper;
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
@@ -70,13 +70,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
         });
 
+        helper = new MyFoodreyDbHelper(this);
+
+
     }
     @Override
     protected void onStart() {
         super.onStart();
 
-        SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
-        SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
         Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
         mCount.moveToFirst();
         int cnt = mCount.getInt(0);
@@ -141,10 +143,34 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     }
 
     @Override
-    public boolean onQueryTextSubmit(String query) {
-        Log.d("Search", "Query string - " + query);
-        Search task = new Search(this);
-        task.execute(query);
+    public boolean onQueryTextSubmit(String str) {
+//        //firebase search version
+//        Log.d("Search", "Query string - " + str);
+//        Search task = new Search(this);
+//        task.execute(str);
+
+        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
+        String query = "SELECT * FROM Restaurant WHERE RESTAURANT like '%" + str + "%' ORDER BY InspectionDate DESC";
+        Cursor cursor = sqliteDb.rawQuery(query,null);
+        restaurantList.clear();
+        while (cursor.moveToNext()){
+            Restaurant r = new Restaurant();
+            r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+            r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+            r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+            r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+            r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
+
+            restaurantList.add(r);
+        }
+
+        list_rest.setAdapter(null);
+        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
+        list_rest.setAdapter(adapter);
 
         return false;
     }
