@@ -31,11 +31,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
+
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
     ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     ListView list_rest;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
