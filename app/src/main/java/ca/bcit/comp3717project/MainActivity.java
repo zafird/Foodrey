@@ -77,10 +77,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
         SQLiteDatabase sqliteDb = helper.getWritableDatabase();
-        String query = "SELECT count(*) cnt FROM Restaurant";
-        Cursor cursor = sqliteDb.rawQuery(query,null);
-        cursor.moveToNext();
-        int cnt = cursor.getColumnIndex("cnt");
+        Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
+        mCount.moveToFirst();
+        int cnt = mCount.getInt(0);
+        mCount.close();
 
         if(cnt > 0 ) {
 
