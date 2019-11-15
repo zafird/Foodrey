@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
-    ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
+    static ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
     ListView list_rest;
 
 
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
         SQLiteDatabase sqliteDb = helper.getWritableDatabase();
-        String query = "SELECT count(*) cnt FROM Setting";
+        String query = "SELECT count(*) cnt FROM Restaurant";
         Cursor cursor = sqliteDb.rawQuery(query,null);
         cursor.moveToNext();
         int cnt = cursor.getColumnIndex("cnt");
