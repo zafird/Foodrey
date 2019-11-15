@@ -66,7 +66,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private boolean animationInProgress = false;
     private FirebaseDatabase database;
     private Location lastKnownLocation;
-    private List<Restaurant> RestaurantList;
+    static private List<Restaurant> RestaurantList;
     private Button btnSettings;
 
     private LatLng currLocat;
