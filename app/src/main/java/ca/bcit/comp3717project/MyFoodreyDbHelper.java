@@ -41,7 +41,7 @@ public class MyFoodreyDbHelper extends SQLiteOpenHelper {
                 db.execSQL(getCreateFavoritesTableSql());
             }
             if (oldVersion < 2) {
-                db.execSQL("ALTER TABLE Favorite ADD COLUMN CREATED_AT NUMERIC;");
+                db.execSQL("ALTER TABLE Favorite ADD COLUMN CREATED_AT TEXT;");
             }
             if (oldVersion < 3) {
                 db.execSQL("ALTER TABLE Favorite ADD COLUMN HazardRating TEXT;");
@@ -57,6 +57,7 @@ public class MyFoodreyDbHelper extends SQLiteOpenHelper {
             if (oldVersion < 5) {
                 db.execSQL(getCreateRestaurantTableSql());
             }
+
 
         } catch (SQLException sqle) {
             String msg = "[DB unavailable]";
