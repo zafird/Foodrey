@@ -4,12 +4,17 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -43,6 +48,9 @@ public class ListViewAdapter extends BaseAdapter {
     public class ViewHolder {
         TextView name;
         TextView address;
+        TextView city;
+        TextView rating;
+        TextView inspectionDate;
     }
 
     @Override
@@ -68,6 +76,9 @@ public class ListViewAdapter extends BaseAdapter {
             // Locate the TextViews in listview_item.xml
             holder.name = (TextView) view.findViewById(R.id.restaurantName);
             holder.address= (TextView) view.findViewById(R.id.textAddress);
+            holder.city= (TextView) view.findViewById(R.id.textCity);
+            holder.rating= (TextView) view.findViewById(R.id.textRating);
+            holder.inspectionDate= (TextView) view.findViewById(R.id.textInspectionDate);
             view.setTag(holder);
         } else {
             holder = (ViewHolder) view.getTag();
@@ -75,6 +86,24 @@ public class ListViewAdapter extends BaseAdapter {
         // Set the results into TextViews
         holder.name.setText(restaurantList.get(position).getNAME());
         holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS());
+        holder.city.setText(restaurantList.get(position).getPHYSICALCITY());
+
+        holder.rating.setText(restaurantList.get(position).getHazardRating());
+        if("Low".equals(restaurantList.get(position).getHazardRating())){
+            holder.rating.setTextColor(Color.GREEN);
+        } else if("Moderate".equals(restaurantList.get(position).getHazardRating())){
+        } else if("High".equals(restaurantList.get(position).getHazardRating())){
+            holder.rating.setTextColor(Color.RED);
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date d1 = sdf.parse(restaurantList.get(position).getInspectionDate());
+            sdf.applyPattern("MM/dd/yyyy");
+            holder.inspectionDate.setText(sdf.format(d1));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

@@ -33,6 +33,32 @@
             android:layout_height="wrap_content"
             android:text="TextView" />
 
+        <TextView
+            android:id="@+id/textCity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:paddingLeft="10sp"/>
+
+        <TextView
+            android:id="@+id/textRating"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:paddingLeft="10sp"
+            android:layout_gravity="right"
+            />
+
+        <TextView
+            android:id="@+id/textInspectionDate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="TextView"
+            android:paddingLeft="10sp"
+            android:layout_gravity="right"
+            />
+
+
     </LinearLayout>
 
 </LinearLayout>

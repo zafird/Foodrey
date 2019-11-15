@@ -74,7 +74,7 @@ public class MyFoodreyDbHelper extends SQLiteOpenHelper {
         sql += "RESTAURANT TEXT, ";
         sql += "CITY TEXT, ";
         sql += "ADDRESS TEXT, ";
-        sql += "CREATED_AT NUMERIC, ";
+        sql += "CREATED_AT TEXT, ";
         sql += "HazardRating TEXT, ";
         sql += "InspectionDate TEXT, ";
         sql += "NumCritical NUMERIC, ";

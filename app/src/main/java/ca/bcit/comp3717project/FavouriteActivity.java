@@ -23,12 +23,13 @@ import com.google.firebase.database.DataSnapshot;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class FavouriteActivity  extends AppCompatActivity {
+public class FavouriteActivity  extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private BottomNavigationView mNavBar;
 
     private SearchView editsearch;
     private ArrayList<Restaurant> restaurantList;
     private SQLiteOpenHelper helper;
+    private ListView lv;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,8 +39,10 @@ public class FavouriteActivity  extends AppCompatActivity {
         restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         helper = new MyFoodreyDbHelper(this);
-        ListView lv = (ListView) findViewById(R.id.lvRestaurant);
+        lv = (ListView) findViewById(R.id.lvRestaurant);
         restaurantList = new ArrayList<>();
+        editsearch = (SearchView) findViewById(R.id.svFavRestaurant);
+        editsearch.setOnQueryTextListener(this);
 
         try {
             GetFavRestaurants();
@@ -51,9 +54,6 @@ public class FavouriteActivity  extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-//        editsearch = (SearchView) findViewById(R.id.svFavRestaurant);
-//        editsearch.setOnSQLiteQueryTextListener(this);
 
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -109,5 +109,38 @@ public class FavouriteActivity  extends AppCompatActivity {
             menuItem = menu.getItem(2);
             menuItem.setChecked(true);
         }
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String str) {
+        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
+        String query = "SELECT * FROM Favorite WHERE Restaurant like '%" + str + "%' ORDER BY InspectionDate DESC";
+        Cursor cursor = sqliteDb.rawQuery(query,null);
+        restaurantList.clear();
+        while (cursor.moveToNext()){
+            Restaurant r = new Restaurant();
+            r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+            r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+            r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+            r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+            r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
+
+            restaurantList.add(r);
+        }
+
+        lv.setAdapter(null);
+        ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restaurantList);
+        lv.setAdapter(adapter);
+
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        return false;
     }
 }
