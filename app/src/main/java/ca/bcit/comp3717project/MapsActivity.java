@@ -112,9 +112,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
 
-        mMap.setMyLocationEnabled(true);
         mMap.setOnMyLocationClickListener(this);
         onCurrentLocation();
+        mMap.setMyLocationEnabled(true);
         mMap.setOnInfoWindowClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
