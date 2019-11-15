@@ -2,9 +2,6 @@ package ca.bcit.comp3717project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ListActivity;
-import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -13,34 +10,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback{
 
     private GoogleMap googleMap;
-    private double latitude;
-    private double longitude;
+    private Double latitude;
+    private Double longitude;
     private float defaultZoomLevel = 10.0f;
     private SQLiteOpenHelper helper = new MyFoodreyDbHelper(this);
     private String restaurantName;
     private String restaurantAddress;
     private String restaurantCity;
-
+    private String restaurantHazardValue;
+    private String restaurantDateValue;
+    private int restaurantCriticalValue;
+    private int restaurantNonCriticalValue;
+    private SQLiteDatabase sqliteDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,14 +49,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         restaurantName = (String) Objects.requireNonNull(getIntent().getExtras()).getString("name");
         restaurantAddress = (String) Objects.requireNonNull(getIntent().getExtras()).getString("address");
         restaurantCity = (String) Objects.requireNonNull(getIntent().getExtras()).getString("city");
-        String restaurantHazard = "Hazard Rating: "
-                + (String) Objects.requireNonNull(getIntent().getExtras()).getString("rating");
-        String restaurantDate = "Date Inspected: " +
-                (String) Objects.requireNonNull(getIntent().getExtras()).getString("date");
-        String restaurantCritical = "Critical Hazards: "
-                + Objects.requireNonNull(getIntent().getExtras()).getInt("critical");
-        String restaurantNonCritical = "Non-Critical Hazards: "
-                + (Objects.requireNonNull(getIntent().getExtras()).getInt("noncritical"));
+        restaurantHazardValue = (String) Objects.requireNonNull(getIntent().getExtras()).getString("rating");
+        String restaurantHazard = "Hazard Rating: " + restaurantHazardValue;
+        restaurantDateValue = (String) Objects.requireNonNull(getIntent().getExtras()).getString("date");
+        String restaurantDate = "Date Inspected: " + restaurantDateValue;
+        restaurantCriticalValue = (Integer) Objects.requireNonNull(getIntent().getExtras()).getInt("critical");
+        String restaurantCritical = "Critical Hazards: " + restaurantCriticalValue;
+        restaurantNonCriticalValue = (Integer) (Objects.requireNonNull(getIntent().getExtras()).getInt("noncritical"));
+        String restaurantNonCritical = "Non-Critical Hazards: " + restaurantNonCriticalValue;
         TextView name = findViewById(R.id.name);
         TextView address = findViewById(R.id.address);
         TextView city = findViewById(R.id.city);
@@ -75,11 +71,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         address.setText(restaurantAddress);
         city.setText(restaurantCity);
         rating.setText(restaurantHazard);
-        if((Objects.requireNonNull(getIntent().getExtras()).getString("rating")).equals("Low")){
+        if("Low".equals(Objects.requireNonNull(getIntent().getExtras()).getString("rating"))){
             rating.setTextColor(getResources().getColor(R.color.green));
-        } else if((Objects.requireNonNull(getIntent().getExtras()).getString("rating")).equals("Moderate")){
+        } else if("Moderate".equals(Objects.requireNonNull(getIntent().getExtras()).getString("rating"))){
             rating.setTextColor(getResources().getColor(R.color.orange));
-        } else if((Objects.requireNonNull(getIntent().getExtras()).getString("rating")).equals("High")){
+        } else if("High".equals(Objects.requireNonNull(getIntent().getExtras()).getString("rating"))){
             rating.setTextColor(getResources().getColor(R.color.red));
         }
         date.setText(restaurantDate);
@@ -97,7 +93,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 .getExtras()).getString("longitude")));
 
         try {
-            SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+            sqliteDb = helper.getWritableDatabase();
             Cursor cursor = sqliteDb.query("Favorite",
                     new String[] {"Restaurant"},
                     "Restaurant = ?",
@@ -137,16 +133,19 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     public void onFavoriteClicked(View view) {
         // set the Favorite CheckBox value
         CheckBox fav = findViewById(R.id.favorite);
-        SQLiteDatabase sqliteDb = helper.getWritableDatabase();
         try {
             if(fav.isChecked()) {
-                ContentValues values = new ContentValues();
-                values.put("RESTAURANT", restaurantName);
-                values.put("CITY", restaurantCity);
-                values.put("ADDRESS", restaurantAddress);
-                values.put("CREATED_AT", Calendar.getInstance().getTimeInMillis());
-
-                sqliteDb.insert("Favorite", null, values);
+                Restaurant r = new Restaurant();
+                r.setNAME(restaurantName);
+                r.setPHYSICALCITY(restaurantCity);
+                r.setPHYSICALADDRESS(restaurantAddress);
+                r.setHazardRating(restaurantHazardValue);
+                r.setInspectionDate(restaurantDateValue);
+                r.setNumCritical(restaurantCriticalValue);
+                r.setNumNonCritical(restaurantNonCriticalValue);
+                r.setLATITUDE(String.valueOf(latitude));
+                r.setLONGITUDE(String.valueOf(longitude));
+                ((MyFoodreyDbHelper)helper).insertFavorite(sqliteDb, r);
             } else {
                 sqliteDb.execSQL("DELETE FROM Favorite WHERE RESTAURANT = '"+restaurantName+"';");
             }

@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
 
@@ -26,12 +28,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
-    ListView list;
-    private ListViewAdapter adapter;
-    private SearchView editsearch;
-    private String[] RestaurantNameList;
-    private ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
-    private ListView list_rest;
+    ListViewAdapter adapter;
+    SearchView editsearch;
+    String[] RestaurantNameList;
+    ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
+    ListView list_rest;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,12 +40,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         setContentView(R.layout.activity_main);
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
         mNavBar = findViewById(R.id.menu_navBar);
-        list = (ListView) findViewById(R.id.lvRestaurant);
+        list_rest = findViewById(R.id.lvRestaurant);
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         editsearch = (SearchView) findViewById(R.id.svRestaurant);
         editsearch.setOnQueryTextListener(this);
 
-        list_rest = findViewById(R.id.lvRestaurant);
         list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -87,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
-
     }
 
     @Override
