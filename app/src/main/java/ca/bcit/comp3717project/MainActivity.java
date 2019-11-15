@@ -84,24 +84,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if(cnt > 0 ) {
 
-            dbRef.limitToFirst(200).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    restaurantList.clear();
-                    for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
-                        Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
-                        if (!restaurant.getNAME().equals("#N/A")) {
-                            restaurantList.add(restaurant);
-                        }
-                    }
+            String query = "SELECT * FROM Restaurant";
+            Cursor cursor = sqliteDb.rawQuery(query,null);
+            restaurantList.clear();
+            while (cursor.moveToNext()){
+                Restaurant r = new Restaurant();
+                r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+                r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+                r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+                r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+                r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+                r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+                r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+                r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+                r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
 
-                    ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
-                    list_rest.setAdapter(adapter);
-                }
+                restaurantList.add(r);
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) { }
-            });
+            ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
+            list_rest.setAdapter(adapter);
 
         } else {
 
