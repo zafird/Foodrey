@@ -118,7 +118,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         LatLng object = new LatLng(
                 latitude, longitude);
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude,longitude)).title("Marker"));
+                .position(new LatLng(latitude,longitude)).title(restaurantName));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(object, defaultZoomLevel));
     }
     public void setUpMap(){

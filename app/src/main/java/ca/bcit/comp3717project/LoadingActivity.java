@@ -15,34 +15,29 @@ public class LoadingActivity extends AppCompatActivity {
     private TextView mLoadingText;
 
     private int mProgressStatus = 0;
-
+    private int counter = 0;
     private Handler mHadler = new Handler();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loading);
-        mProgressBar = findViewById(R.id.progressBar);
-        mLoadingText = findViewById(R.id.tvLoadingComplete);
-        mLoadingText.setVisibility(View.INVISIBLE);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while(mProgressStatus < 100){
-                    mProgressStatus += 5;
-                    android.os.SystemClock.sleep(100);
+                    mProgressStatus += 3;
+                    android.os.SystemClock.sleep(105);
 
                     mHadler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mProgressBar.setProgress((mProgressStatus));
                         }
                     });
                     mHadler.post(new Runnable() {
                         @Override
                         public void run() {
-                            mLoadingText.setVisibility(View.VISIBLE);
-
                         }
                     });
                     if(mProgressStatus > 95){
