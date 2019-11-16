@@ -64,10 +64,6 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
 
     private void goToMapActivity() {
         Intent intent = new Intent(originalContext, MapsActivity.class);
-//        Bundle informacion = new Bundle();
-//        ArrayList<Restaurant> rest = new ArrayList<>();
-//        informacion.putSerializable("listRest", restList);
-//        intent.putExtras(informacion);
         originalContext.startActivity(intent);
     }
 

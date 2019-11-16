@@ -26,7 +26,7 @@
             android:theme="@style/AppTheme" />
         <activity
             android:name=".MainActivity"
-            android:label="Main"
+            android:label="Foodrey"
             android:theme="@style/AppTheme" />
 
         <activity android:name=".LoadingActivity">

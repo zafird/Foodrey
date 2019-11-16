@@ -2,6 +2,7 @@ package ca.bcit.comp3717project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -156,5 +157,11 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
             t.show();
         }
+    }
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
+        super.onBackPressed();
+        finish();
     }
 }

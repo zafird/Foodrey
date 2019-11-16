@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.LatLng;
 
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -50,10 +51,8 @@ import java.util.stream.Collectors;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
 
-    private final String TAG = "HumbleMaps";
     private GoogleMap mMap;
     private LocationManager locationManager;
-    private LocationListener locationListener;
     private float defaultZoomLevel = 12.0f;
     private boolean animationInProgress = false;
     private FirebaseDatabase database;
@@ -63,8 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SearchView svMap;
     private LatLng currLocat;
     private ArrayList<Restaurant> markersRestaurantMapList;
-    private ListViewAdapter restAdapter;
-//    private ArrayList<Restaurant> listRest;
+    private BottomNavigationView mNavBar;
 
 
     @Override
@@ -75,7 +73,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         RestaurantList = MainActivity.restaurantList;
         markersRestaurantMapList = new ArrayList<Restaurant>();
         svMap = findViewById(R.id.svMap);
-
+        mNavBar = findViewById(R.id.menu_navBar);
+        mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -160,7 +159,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     private void populateMarksOnMapBySerach(List<Restaurant> restSerachList){
-        int count = 25;
+        int count = 40;
         if(markersRestaurantMapList != null){
             markersRestaurantMapList.clear();
         }
