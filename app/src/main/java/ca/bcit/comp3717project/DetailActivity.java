@@ -158,10 +158,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             t.show();
         }
     }
-    @Override
-    public void onBackPressed() {
-        // Do Here what ever you want do on back press;
-        super.onBackPressed();
-        finish();
-    }
+//    @Override
+//    public void onBackPressed() {
+//        // Do Here what ever you want do on back press;
+//        super.onBackPressed();
+//        finish();
+//    }
 }

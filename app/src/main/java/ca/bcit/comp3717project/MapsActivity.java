@@ -33,6 +33,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 
@@ -46,6 +48,7 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
@@ -159,7 +162,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     private void populateMarksOnMapBySerach(List<Restaurant> restSerachList){
-        int count = 40;
+        int count = 25;
         if(markersRestaurantMapList != null){
             markersRestaurantMapList.clear();
         }
@@ -171,7 +174,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             LatLng loc = new LatLng(Float.valueOf(r.getLATITUDE()),Float.valueOf(r.getLONGITUDE()));
             findDistanceNearByRestaurant(loc);
-            addMarkerMap(loc,r.getNAME(),findDistanceNearByRestaurant(loc));
+            addMarkerMap(loc,r.getNAME(),findDistanceNearByRestaurant(loc),r.getHazardRating());
             count --;
 
         }
@@ -195,7 +198,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Double.valueOf(rest.getLONGITUDE()));
 
                 if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel ) {
-                    addMarkerMap(testRestaurant, rest.getNAME(), findDistanceNearByRestaurant(testRestaurant));
+                    addMarkerMap(testRestaurant, rest.getNAME(),
+                            findDistanceNearByRestaurant(testRestaurant),rest.getHazardRating());
                     counter++;
                     markersRestaurantMapList.add(rest);
                     if(findDistanceNearByRestaurant(testRestaurant) > longDist){
@@ -274,15 +278,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
     //add markers to the map
-    private void addMarkerMap(LatLng coordinates, String title, double dist) {
+    private void addMarkerMap(LatLng coordinates, String title, double dist, String rating) {
         DecimalFormat df = new DecimalFormat("#.##");
         if(title == null) {
             title = "Current Location: %4.3f Lat %4.3f Long.";
         }
         String msg = String.format(title, coordinates.latitude, coordinates.longitude);
+        float color;
+        if("Low".equals(rating)){
+            color = BitmapDescriptorFactory.HUE_GREEN;
+        } else if("Moderate".equals(rating)){
+            color = BitmapDescriptorFactory.HUE_ORANGE;
+        } else {
+            color = BitmapDescriptorFactory.HUE_RED;
+        }
 
         LatLng latlng = new LatLng(coordinates.latitude, coordinates.longitude);
-        mMap.addMarker(new MarkerOptions().position(latlng).title(msg).snippet(df.format(dist) + " km"));
+        mMap.addMarker(new MarkerOptions().position(latlng).title(msg)
+                .snippet(df.format(dist) + " km")
+                .icon(BitmapDescriptorFactory.defaultMarker(color)));
     }
 
 
