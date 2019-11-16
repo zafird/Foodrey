@@ -11,7 +11,7 @@
         android:layout_height="fill_parent">
 
         <SearchView
-            android:id="@+id/svRestaurant"
+            android:id="@+id/svMap"
             android:layout_width="0dp"
             android:layout_weight="0.75"
             android:layout_height="wrap_content"

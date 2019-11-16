@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -15,15 +14,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import android.widget.TextView;
-
-import android.widget.ListView;
+import android.widget.SearchView;
 
 import android.widget.Toast;
 
@@ -37,23 +33,19 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
-import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
@@ -68,21 +60,39 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private Location lastKnownLocation;
     static private List<Restaurant> RestaurantList;
     private Button btnSettings;
-
+    private SearchView svMap;
     private LatLng currLocat;
     private ArrayList<Restaurant> markersRestaurantMapList;
+    private ListViewAdapter restAdapter;
 //    private ArrayList<Restaurant> listRest;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_maps);
         // Read from the database
         RestaurantList = MainActivity.restaurantList;
-//        listRest = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         markersRestaurantMapList = new ArrayList<Restaurant>();
+        svMap = findViewById(R.id.svMap);
 
-        setContentView(R.layout.activity_maps);
+        svMap.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                String restaurant = svMap.getQuery().toString();
+
+                List<Restaurant> restSerachList = RestaurantList.stream()
+                        .filter(p -> p.getNAME().toLowerCase().startsWith(restaurant.toLowerCase())).collect(Collectors.toList());
+                populateMarksOnMapBySerach(restSerachList);
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(final String s) {
+                return false;
+            }
+        });
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -109,7 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         mMap = googleMap;
 
         mMap.setOnMyLocationClickListener(this);
@@ -127,7 +136,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(currLocat,defaultZoomLevel));
-        populateMarksOnMap(9, 2);
+        populateMarksOnMapByDistance(9, 2);
 
     }
     @Override
@@ -150,7 +159,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         }
     }
-    private void populateMarksOnMap(int numberRest, double distanceTravel){
+    private void populateMarksOnMapBySerach(List<Restaurant> restSerachList){
+        int count = 25;
+        if(markersRestaurantMapList != null){
+            markersRestaurantMapList.clear();
+        }
+        mMap.clear();
+        for(Restaurant r : restSerachList){
+            markersRestaurantMapList.add(r);
+            if(count == 0){
+                break;
+            }
+            LatLng loc = new LatLng(Float.valueOf(r.getLATITUDE()),Float.valueOf(r.getLONGITUDE()));
+            findDistanceNearByRestaurant(loc);
+            addMarkerMap(loc,r.getNAME(),findDistanceNearByRestaurant(loc));
+            count --;
+
+        }
+    }
+
+    private void populateMarksOnMapByDistance(int numberRest, double distanceTravel){
         DecimalFormat df = new DecimalFormat("#.##");
         LatLng testRestaurant;
         String restName = "";
@@ -258,6 +286,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(latlng).title(msg).snippet(df.format(dist) + " km"));
     }
 
+
     private float findDistanceNearByRestaurant(LatLng coordinates){
         double latX = lastKnownLocation.getLatitude();
         double lonY = lastKnownLocation.getLongitude();
@@ -300,7 +329,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
                 if(!etNumRestaurants.getText().toString().equals("")) {
                     numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
-                    populateMarksOnMap(numRest,2);
+                    populateMarksOnMapByDistance(numRest,2);
                     mMap.addCircle(new CircleOptions()
                             .center(currLocat)
                             .radius(2000)
@@ -322,7 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
                 if(!etNumRestaurants.getText().toString().equals("")) {
                     numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
-                    populateMarksOnMap(numRest,4);
+                    populateMarksOnMapByDistance(numRest,4);
                     mMap.addCircle(new CircleOptions()
                             .center(currLocat)
                             .radius(4000)
@@ -343,7 +372,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 etNumRestaurants.setFilters(new InputFilter[]{ new InputFilterMinMax("0", "25")});
                 if(!etNumRestaurants.getText().toString().equals("")) {
                     numRest =  Integer.parseInt(etNumRestaurants.getText().toString());
-                    populateMarksOnMap(numRest,6);
+                    populateMarksOnMapByDistance(numRest,6);
                     mMap.addCircle(new CircleOptions()
                             .center(currLocat)
                             .radius(6000)
