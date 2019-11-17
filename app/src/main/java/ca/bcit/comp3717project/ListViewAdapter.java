@@ -28,6 +28,7 @@ public class ListViewAdapter extends BaseAdapter {
     LayoutInflater inflater;
     private List<Restaurant> restaurantList = null;
     private ArrayList<Restaurant> arraylist;
+    private final int[] colors = new int [] {R.color.lightpink, R.color.primaryTextColor};
 
     public ListViewAdapter(Context context, List<Restaurant> restaurantList) {
         mContext = context;
@@ -76,15 +77,22 @@ public class ListViewAdapter extends BaseAdapter {
             holder = new ViewHolder();
             view = inflater.inflate(R.layout.list_layout, null);
             // Locate the TextViews in listview_item.xml
+            if(position%2 == 0){
+                view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.lightpink));
+            }
             holder.name = (TextView) view.findViewById(R.id.restaurantName);
             holder.address= (TextView) view.findViewById(R.id.textAddress);
             holder.city= (TextView) view.findViewById(R.id.textCity);
             holder.rating= (TextView) view.findViewById(R.id.textRating);
             holder.inspectionDate= (TextView) view.findViewById(R.id.textInspectionDate);
             view.setTag(holder);
+
         } else {
             holder = (ViewHolder) view.getTag();
+            int colorPosition = position % colors.length;
+            view.setBackgroundResource(colors[colorPosition]);
         }
+
         // Set the results into TextViews
         holder.name.setText(restaurantList.get(position).getNAME());
         holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS());
@@ -108,9 +116,6 @@ public class ListViewAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
-        if(position%2 == 0){
-            view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.lightpink));
-        }
 
         return view;
     }
