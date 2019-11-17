@@ -24,13 +24,13 @@
             android:name=".FavouriteActivity"
             android:label="Favourite"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".MainActivity"
-            android:label="Foodrey"
-            android:theme="@style/AppTheme" />
+<!--        <activity-->
+<!--            android:name=".LoadingActivity"-->
+<!--            android:label="Foodrey"-->
+<!--            android:theme="@style/AppTheme" />-->
 
-        <activity android:name=".LoadingActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -2,11 +2,19 @@ package ca.bcit.comp3717project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.location.LocationManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -17,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.database.DataSnapshot;
@@ -26,12 +35,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private final String TAG = "COMP3717Main";
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
     private SQLiteOpenHelper helper;
+    static LocationManager locationManager;
     ListViewAdapter adapter;
     SearchView editsearch;
     String[] RestaurantNameList;
@@ -42,92 +54,122 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_loading);
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
-        list_rest = findViewById(R.id.lvRestaurant);
-        mNavBar = findViewById(R.id.menu_navBar);
-        mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
-        editsearch = (SearchView) findViewById(R.id.svRestaurant);
-        editsearch.setOnQueryTextListener(this);
-
-        list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
-                Restaurant res = (Restaurant) adapterView.getItemAtPosition((int)l);
-                Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-                intent.putExtra("index", (int) l);
-                intent.putExtra("name",res.getNAME());
-                intent.putExtra("address",res.getPHYSICALADDRESS());
-                intent.putExtra("city",res.getPHYSICALCITY());
-                intent.putExtra("rating",res.getHazardRating());
-                intent.putExtra("date",res.getInspectionDate());
-                intent.putExtra("critical",res.getNumCritical());
-                intent.putExtra("noncritical",res.getNumNonCritical());
-                intent.putExtra("latitude",res.getLATITUDE());
-                intent.putExtra("longitude",res.getLONGITUDE());
-                startActivity(intent);
-            }
-        });
-
-        helper = new MyFoodreyDbHelper(this);
+        new MyTask().execute();
 
 
     }
     @Override
     protected void onStart() {
         super.onStart();
-
-        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
-        Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
-        mCount.moveToFirst();
-        int cnt = mCount.getInt(0);
-        mCount.close();
-
-        if(cnt > 0 ) {
-
-            String query = "SELECT * FROM Restaurant";
-            Cursor cursor = sqliteDb.rawQuery(query,null);
-            restaurantList.clear();
-            while (cursor.moveToNext()){
-                Restaurant r = new Restaurant();
-                r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
-                r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
-                r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
-                r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
-                r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
-                r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
-                r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
-                r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
-                r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
-
-                restaurantList.add(r);
-            }
-
-            ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
-            list_rest.setAdapter(adapter);
-
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
+            MainActivity.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         } else {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
+        }
 
-            dbRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    restaurantList.clear();
-                    for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
-                        Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
-                        if (!restaurant.getNAME().equals("#N/A")) {
-                            restaurantList.add(restaurant);
-                        }
-                    }
+    }
+    private class MyTask extends AsyncTask<Uri, Integer, List<Restaurant>> {
 
-                    ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
-                    list_rest.setAdapter(adapter);
+        @Override
+        protected List<Restaurant> doInBackground(Uri... params) {
+            helper = new MyFoodreyDbHelper(MainActivity.this);
+            SQLiteDatabase sqliteDb = helper.getReadableDatabase();
+            Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
+            mCount.moveToFirst();
+            int cnt = mCount.getInt(0);
+            mCount.close();
+
+            if(cnt > 0 ) {
+
+                String query = "SELECT * FROM Restaurant";
+                Cursor cursor = sqliteDb.rawQuery(query,null);
+                restaurantList.clear();
+                while (cursor.moveToNext()){
+                    Restaurant r = new Restaurant();
+                    r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+                    r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+                    r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+                    r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+                    r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+                    r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+                    r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+                    r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+                    r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
+
+                    restaurantList.add(r);
                 }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) { }
-            });
+
+
+            } else {
+
+                dbRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        restaurantList.clear();
+                        for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
+                            Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
+                            if (!restaurant.getNAME().equals("#N/A")) {
+                                restaurantList.add(restaurant);
+                            }
+                        }
+
+//                        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
+//                        list_rest.setAdapter(adapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) { }
+                });
+            }
+            int mProgressStatus = 0;
+            while(mProgressStatus < 100) {
+                mProgressStatus += 3;
+                android.os.SystemClock.sleep(105);
+            }
+            return restaurantList;
         }
+
+        @Override
+        protected void onPostExecute(List<Restaurant> result) {
+            setContentView(R.layout.activity_main);
+            // set layout elements with data that from the result
+
+            list_rest = findViewById(R.id.lvRestaurant);
+            ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, result);
+            list_rest.setAdapter(adapter);
+            mNavBar = findViewById(R.id.menu_navBar);
+            mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
+            editsearch = (SearchView) findViewById(R.id.svRestaurant);
+            editsearch.setOnQueryTextListener(MainActivity.this);
+
+            list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    Restaurant res = (Restaurant) adapterView.getItemAtPosition((int)l);
+                    Intent intent = new Intent(MainActivity.this, DetailActivity.class);
+                    intent.putExtra("index", (int) l);
+                    intent.putExtra("name",res.getNAME());
+                    intent.putExtra("address",res.getPHYSICALADDRESS());
+                    intent.putExtra("city",res.getPHYSICALCITY());
+                    intent.putExtra("rating",res.getHazardRating());
+                    intent.putExtra("date",res.getInspectionDate());
+                    intent.putExtra("critical",res.getNumCritical());
+                    intent.putExtra("noncritical",res.getNumNonCritical());
+                    intent.putExtra("latitude",res.getLATITUDE());
+                    intent.putExtra("longitude",res.getLONGITUDE());
+                    startActivity(intent);
+                }
+            });
+            // or just call some function you defined in your activity instead
+
+        }
+    }
+    void setupAdapter(){
+
 
     }
 
