@@ -12,9 +12,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/AppTheme.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".DetailActivity"></activity>
+        <activity android:name=".DetailActivity"
+            android:theme="@style/AppTheme"/>
 
         <activity
             android:name=".MapsActivity"
@@ -24,15 +25,16 @@
             android:name=".FavouriteActivity"
             android:label="Favourite"
             android:theme="@style/AppTheme" />
-        <activity
-            android:name=".MainActivity"
-            android:label="Main"
-            android:theme="@style/AppTheme" />
+<!--        <activity-->
+<!--            android:name=".LoadingActivity"-->
+<!--            android:label="Foodrey"-->
+<!--            android:theme="@style/AppTheme" />-->
 
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

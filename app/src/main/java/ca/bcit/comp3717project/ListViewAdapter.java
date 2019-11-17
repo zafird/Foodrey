@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -92,6 +94,7 @@ public class ListViewAdapter extends BaseAdapter {
         if("Low".equals(restaurantList.get(position).getHazardRating())){
             holder.rating.setTextColor(Color.GREEN);
         } else if("Moderate".equals(restaurantList.get(position).getHazardRating())){
+            holder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
         } else if("High".equals(restaurantList.get(position).getHazardRating())){
             holder.rating.setTextColor(Color.RED);
         }

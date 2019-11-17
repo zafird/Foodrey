@@ -59,20 +59,20 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
     }
     private void goToMainActivity() {
         Intent intent = new Intent(originalContext, MainActivity.class);
+        intent.putExtra("nav",  1);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         originalContext.startActivity(intent);
     }
 
     private void goToMapActivity() {
         Intent intent = new Intent(originalContext, MapsActivity.class);
-//        Bundle informacion = new Bundle();
-//        ArrayList<Restaurant> rest = new ArrayList<>();
-//        informacion.putSerializable("listRest", restList);
-//        intent.putExtras(informacion);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         originalContext.startActivity(intent);
     }
 
     private void goToFavouriteActivity() {
         Intent intent = new Intent(originalContext, FavouriteActivity.class);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         originalContext.startActivity(intent);
     }
 }

@@ -2,6 +2,7 @@ package ca.bcit.comp3717project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -117,7 +118,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         LatLng object = new LatLng(
                 latitude, longitude);
         map.addMarker(new MarkerOptions()
-                .position(new LatLng(latitude,longitude)).title("Marker"));
+                .position(new LatLng(latitude,longitude)).title(restaurantName));
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(object, defaultZoomLevel));
     }
     public void setUpMap(){
@@ -157,4 +158,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             t.show();
         }
     }
+//    @Override
+//    public void onBackPressed() {
+//        // Do Here what ever you want do on back press;
+//        super.onBackPressed();
+//        finish();
+//    }
 }
