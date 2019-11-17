@@ -36,7 +36,8 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
         mNavBar = findViewById(R.id.menu_navBar);
-        restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
+//        restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
+        restaurantList = MainActivity.restaurantList;
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         helper = new MyFoodreyDbHelper(this);
         lv = (ListView) findViewById(R.id.lvRestaurant);

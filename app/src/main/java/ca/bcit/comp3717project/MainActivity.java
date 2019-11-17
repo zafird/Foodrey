@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -43,18 +44,29 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
     private SQLiteOpenHelper helper;
-    static LocationManager locationManager;
+    private LocationManager locationManager;
     ListViewAdapter adapter;
     SearchView editsearch;
-    String[] RestaurantNameList;
-    static ArrayList<Restaurant> restaurantList = new ArrayList<Restaurant>();
+    static ArrayList<Restaurant> restaurantList = new ArrayList<>();
     ListView list_rest;
+    private Bundle extras;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_loading);
+        int pressedNavBar = 0;
+        extras= getIntent().getExtras();
+        if(extras != null){
+            pressedNavBar = extras.getInt("nav");
+        }
+        if(pressedNavBar == 1){
+            setContentView(R.layout.activity_main);
+        }else{
+            getSupportActionBar().hide();
+            setContentView(R.layout.activity_loading);
+
+        }
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
         new MyTask().execute();
 
@@ -64,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onStart() {
         super.onStart();
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            MainActivity.locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+            locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
@@ -82,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             mCount.close();
 
             if(cnt > 0 ) {
-
                 String query = "SELECT * FROM Restaurant";
                 Cursor cursor = sqliteDb.rawQuery(query,null);
                 restaurantList.clear();
@@ -100,9 +111,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                     restaurantList.add(r);
                 }
-
-
-
             } else {
 
                 dbRef.addValueEventListener(new ValueEventListener() {
@@ -115,30 +123,28 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 restaurantList.add(restaurant);
                             }
                         }
-
-//                        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
-//                        list_rest.setAdapter(adapter);
                     }
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
             }
+            adapter = new ListViewAdapter(MainActivity.this, restaurantList);
             int mProgressStatus = 0;
             while(mProgressStatus < 100) {
                 mProgressStatus += 3;
-                android.os.SystemClock.sleep(105);
+                android.os.SystemClock.sleep(110);
             }
+
             return restaurantList;
         }
 
         @Override
         protected void onPostExecute(List<Restaurant> result) {
+            getSupportActionBar().show();
             setContentView(R.layout.activity_main);
             // set layout elements with data that from the result
-
             list_rest = findViewById(R.id.lvRestaurant);
-            ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, result);
             list_rest.setAdapter(adapter);
             mNavBar = findViewById(R.id.menu_navBar);
             mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
@@ -164,14 +170,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     startActivity(intent);
                 }
             });
-            // or just call some function you defined in your activity instead
 
         }
     }
-    void setupAdapter(){
 
-
-    }
 
     @Override
     protected void onRestart() {
@@ -186,11 +188,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String str) {
-//        //firebase search version
-//        Log.d("Search", "Query string - " + str);
-//        Search task = new Search(this);
-//        task.execute(str);
-
         SQLiteDatabase sqliteDb = helper.getReadableDatabase();
         String query = "SELECT * FROM Restaurant WHERE RESTAURANT like '%" + str + "%' ORDER BY InspectionDate DESC";
         Cursor cursor = sqliteDb.rawQuery(query,null);

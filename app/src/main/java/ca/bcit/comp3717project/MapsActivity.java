@@ -55,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
-
+    private LocationManager locationManager;
     private float defaultZoomLevel = 12.0f;
     private boolean animationInProgress = false;
     private FirebaseDatabase database;
@@ -268,9 +268,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     // get the current location
     public void onCurrentLocation() {
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
-            lastKnownLocation = MainActivity.locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+            lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         } else {
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
