@@ -15,6 +15,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -118,7 +120,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
 
     }
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        Menu menu = mNavBar.getMenu();
+        MenuItem menuItem = menu.getItem(0);
 
+        if(this.getClass().getSimpleName().equals("MapsActivity")){
+            menuItem.setChecked(true);
+        }
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;

@@ -2,7 +2,10 @@ package ca.bcit.comp3717project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
@@ -110,6 +113,8 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
 
+
+
     }
 
 
@@ -158,10 +163,12 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             t.show();
         }
     }
-//    @Override
-//    public void onBackPressed() {
-//        // Do Here what ever you want do on back press;
-//        super.onBackPressed();
-//        finish();
-//    }
+    @Override
+    public void onBackPressed() {
+        // Do Here what ever you want do on back press;
+        super.onBackPressed();
+        Intent intent = new Intent(FavouriteActivity.BROADCAST_ACTION);
+        sendBroadcast(intent);
+        finish();
+    }
 }

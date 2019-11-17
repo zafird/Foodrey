@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
             }
-
+            //allows the loading screent to load
             int mProgressStatus = 0;
             while(mProgressStatus < 100) {
                 mProgressStatus += 2;
@@ -204,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     protected void onRestart() {
         super.onRestart();
         Menu menu = mNavBar.getMenu();
-        MenuItem menuItem = menu.getItem(0);
+        MenuItem menuItem = menu.getItem(1);
 
         if(this.getClass().getSimpleName().equals("MainActivity")){
             menuItem.setChecked(true);

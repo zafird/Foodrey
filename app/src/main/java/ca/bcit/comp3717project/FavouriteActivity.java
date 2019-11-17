@@ -1,6 +1,9 @@
 package ca.bcit.comp3717project;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -24,8 +27,8 @@ import java.util.stream.Collectors;
 
 
 public class FavouriteActivity  extends AppCompatActivity implements SearchView.OnQueryTextListener {
+    public final static String BROADCAST_ACTION = "com.updateFavourite.action";
     private BottomNavigationView mNavBar;
-
     private SearchView editsearch;
     private ArrayList<Restaurant> restaurantList;
     private SQLiteOpenHelper helper;
@@ -36,7 +39,6 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favourite);
         mNavBar = findViewById(R.id.menu_navBar);
-//        restaurantList = (ArrayList<Restaurant>) getIntent().getSerializableExtra("listRest");
         restaurantList = MainActivity.restaurantList;
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
         helper = new MyFoodreyDbHelper(this);
@@ -44,6 +46,20 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
         restaurantList = new ArrayList<>();
         editsearch = (SearchView) findViewById(R.id.svFavRestaurant);
         editsearch.setOnQueryTextListener(this);
+
+        //update Activity from the Service
+        BroadcastReceiver br = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                System.out.println("signal");
+                GetFavRestaurants();
+                ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restaurantList);
+                lv.setAdapter(adapter);
+            }
+        };
+
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        registerReceiver(br, intFilt);
 
         try {
             GetFavRestaurants();
@@ -137,7 +153,6 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
         List<Restaurant> restSerachList = new ArrayList<>();
         restSerachList = restaurantList.stream()
                 .filter(p -> p.getNAME().toLowerCase().startsWith(str.toLowerCase())).collect(Collectors.toList());
-
 
         lv.setAdapter(null);
         ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restSerachList);

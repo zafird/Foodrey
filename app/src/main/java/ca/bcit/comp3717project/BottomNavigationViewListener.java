@@ -46,7 +46,8 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
                         goToMainActivity();
                     break;
                 case R.id.iMap:
-                    goToMapActivity();
+                    if(!originalContext.getClass().getSimpleName().equals("MapsActivity"))
+                        goToMapActivity();
                     break;
                 case R.id.iBook:
                     if(!originalContext.getClass().getSimpleName().equals("FavouriteActivity"))
