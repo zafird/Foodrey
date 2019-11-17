@@ -108,6 +108,10 @@ public class ListViewAdapter extends BaseAdapter {
             e.printStackTrace();
         }
 
+        if(position%2 == 0){
+            view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.lightpink));
+        }
+
         return view;
     }
 
