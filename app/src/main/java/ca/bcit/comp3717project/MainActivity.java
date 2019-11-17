@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -38,6 +39,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private final String TAG = "COMP3717Main";
@@ -129,11 +131,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     public void onCancelled(@NonNull DatabaseError databaseError) { }
                 });
             }
-            adapter = new ListViewAdapter(MainActivity.this, restaurantList);
+
             int mProgressStatus = 0;
             while(mProgressStatus < 100) {
-                mProgressStatus += 3;
-                android.os.SystemClock.sleep(110);
+                mProgressStatus += 2;
+                android.os.SystemClock.sleep(105);
             }
 
             return restaurantList;
@@ -145,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             setContentView(R.layout.activity_main);
             // set layout elements with data that from the result
             list_rest = findViewById(R.id.lvRestaurant);
-            list_rest.setAdapter(adapter);
+            setAdapter();
             mNavBar = findViewById(R.id.menu_navBar);
             mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
             editsearch = (SearchView) findViewById(R.id.svRestaurant);
@@ -170,8 +172,31 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     startActivity(intent);
                 }
             });
+            //listen to the close button on the search view and populate 100 items on the list
+            editsearch.setOnCloseListener(new SearchView.OnCloseListener() {
+                @Override
+                public boolean onClose() {
+                    setAdapter();
+                    return false;
+                }
+            });
 
         }
+    }
+    private void setAdapter(){
+        List<Restaurant> restSerachList = new ArrayList<>();
+        int count = 0;
+        for(Restaurant r : restaurantList){
+            if(count < 100){
+                restSerachList.add(r);
+            }else{
+                break;
+            }
+            count++;
+        }
+        list_rest.setAdapter(null);
+        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restSerachList);
+        list_rest.setAdapter(adapter);
     }
 
 
@@ -188,27 +213,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public boolean onQueryTextSubmit(String str) {
-        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
-        String query = "SELECT * FROM Restaurant WHERE RESTAURANT like '%" + str + "%' ORDER BY InspectionDate DESC";
-        Cursor cursor = sqliteDb.rawQuery(query,null);
-        restaurantList.clear();
-        while (cursor.moveToNext()){
-            Restaurant r = new Restaurant();
-            r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
-            r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
-            r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
-            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
-            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
-            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
-            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
-            r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
-            r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
 
-            restaurantList.add(r);
-        }
+        List<Restaurant> restSerachList = new ArrayList<>();
+        restSerachList = restaurantList.stream()
+                .filter(p -> p.getNAME().toLowerCase().startsWith(str.toLowerCase())).collect(Collectors.toList());
+
+
 
         list_rest.setAdapter(null);
-        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList);
+        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restSerachList);
         list_rest.setAdapter(adapter);
 
         return false;

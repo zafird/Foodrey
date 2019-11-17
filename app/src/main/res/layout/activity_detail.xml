@@ -64,6 +64,7 @@
         android:paddingVertical="1sp"
         android:textDirection="ltr"
         android:layoutDirection="rtl"
+        android:button="@drawable/check_box_favorite"
         android:layout_marginBottom="10dp"/>
 
     <fragment

@@ -72,7 +72,7 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
 
     private void goToFavouriteActivity() {
         Intent intent = new Intent(originalContext, FavouriteActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         originalContext.startActivity(intent);
     }
 }

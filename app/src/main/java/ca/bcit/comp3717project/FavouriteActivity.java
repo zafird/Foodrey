@@ -18,10 +18,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.database.DataSnapshot;
-
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 
 public class FavouriteActivity  extends AppCompatActivity implements SearchView.OnQueryTextListener {
     private BottomNavigationView mNavBar;
@@ -49,7 +49,6 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
             GetFavRestaurants();
 
             ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restaurantList);
-            //ListAdapter adapter = new SimpleAdapter(FavouriteActivity.this, restaurantList, R.layout.list_row,new String[]{"name","city","address"}, new int[]{R.id.name, R.id.city, R.id.address});
             lv.setAdapter(adapter);
 
         } catch (Exception e) {
@@ -73,6 +72,26 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
                 intent.putExtra("latitude",res.getLATITUDE());
                 intent.putExtra("longitude",res.getLONGITUDE());
                 startActivity(intent);
+            }
+        });
+        //listen to the close button on the search view and populate 100 items on the list
+        editsearch.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                List<Restaurant> restSerachList = new ArrayList<>();
+                int count = 0;
+                for(Restaurant r : restaurantList){
+                    if(count < 100){
+                        restSerachList.add(r);
+                    }else{
+                        break;
+                    }
+                    count++;
+                }
+                lv.setAdapter(null);
+                ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restSerachList);
+                lv.setAdapter(adapter);
+                return false;
             }
         });
     }
@@ -114,27 +133,14 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
 
     @Override
     public boolean onQueryTextSubmit(String str) {
-        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
-        String query = "SELECT * FROM Favorite WHERE Restaurant like '%" + str + "%' ORDER BY InspectionDate DESC";
-        Cursor cursor = sqliteDb.rawQuery(query,null);
-        restaurantList.clear();
-        while (cursor.moveToNext()){
-            Restaurant r = new Restaurant();
-            r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
-            r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
-            r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
-            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
-            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
-            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
-            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
-            r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
-            r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
 
-            restaurantList.add(r);
-        }
+        List<Restaurant> restSerachList = new ArrayList<>();
+        restSerachList = restaurantList.stream()
+                .filter(p -> p.getNAME().toLowerCase().startsWith(str.toLowerCase())).collect(Collectors.toList());
+
 
         lv.setAdapter(null);
-        ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restaurantList);
+        ListViewAdapter adapter = new ListViewAdapter(FavouriteActivity.this, restSerachList);
         lv.setAdapter(adapter);
 
         return false;

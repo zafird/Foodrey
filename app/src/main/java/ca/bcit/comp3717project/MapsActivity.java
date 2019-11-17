@@ -129,10 +129,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setOnInfoWindowClickListener(this);
         database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("restaurants");
-        //get current location.
-
-
-        // Add a marker in Sydney and move the camera
 
         currLocat = new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude());
 
@@ -224,37 +220,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Toast.makeText(this, "You are here", Toast.LENGTH_LONG).show();
     }
 
-    public void onSearch(View v) {
-        List<Address> addressList = null;
-        EditText editTextLocation = (EditText) findViewById(R.id.svRestaurant);
-        String location = editTextLocation.getText().toString();
-        if (location != null && location != "") {
-            Geocoder geocoder = new Geocoder(this);
-            try {
-                addressList = geocoder.getFromLocationName(location, 1);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            Address adr = addressList.get(0);
-            LatLng latLng = new LatLng(adr.getLatitude(), adr.getLongitude());
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
-        }
-    }
-
-    GoogleMap.CancelableCallback cancelableCallback = new GoogleMap.CancelableCallback() {
-        @Override
-        public void onFinish() {
-            animationInProgress = false;
-        }
-
-        @Override
-        public void onCancel() {
-            animationInProgress = false;
-        }
-    };
-
     public void onChangeMapType(View v) {
         if (mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL)
             mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
@@ -297,7 +262,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .icon(BitmapDescriptorFactory.defaultMarker(color)));
     }
 
-
+    //find distance between current location to restaurants
     private float findDistanceNearByRestaurant(LatLng coordinates){
         double latX = lastKnownLocation.getLatitude();
         double lonY = lastKnownLocation.getLongitude();
@@ -314,7 +279,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
     //open the dialog box
     private void showMapSettingDialog(){
-
 
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
 
