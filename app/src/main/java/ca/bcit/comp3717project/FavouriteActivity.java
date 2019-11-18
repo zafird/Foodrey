@@ -46,6 +46,7 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
         restaurantList = new ArrayList<>();
         editsearch = (SearchView) findViewById(R.id.svFavRestaurant);
         editsearch.setOnQueryTextListener(this);
+        setTitle("Foodrey");
 
         //update Activity from the Service
         BroadcastReceiver br = new BroadcastReceiver() {
