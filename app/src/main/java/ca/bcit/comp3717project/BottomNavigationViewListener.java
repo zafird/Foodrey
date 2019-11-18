@@ -22,19 +22,22 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
         checkCurrentMenuItem();
     }
 
-    private void checkCurrentMenuItem() {
+    public void checkCurrentMenuItem() {
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem;
         if(originalContext.getClass().getSimpleName().equals("MainActivity")){
             menuItem = menu.getItem(0);
             menuItem.setChecked(true);
-        }else if(originalContext.getClass().getSimpleName().equals("FavouriteActivity")){
+        }
+        if(originalContext.getClass().getSimpleName().equals("FavouriteActivity")){
             menuItem = menu.getItem(2);
             menuItem.setChecked(true);
-        }else if(originalContext.getClass().getSimpleName().equals("MapsActivity")){
+        }
+        if(originalContext.getClass().getSimpleName().equals("MapsActivity")){
             menuItem = menu.getItem(1);
             menuItem.setChecked(true);
         }
+
     }
 
     @Override
@@ -73,7 +76,7 @@ public class BottomNavigationViewListener implements BottomNavigationView.OnNavi
 
     private void goToFavouriteActivity() {
         Intent intent = new Intent(originalContext, FavouriteActivity.class);
-//        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         originalContext.startActivity(intent);
     }
 }

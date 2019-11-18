@@ -74,6 +74,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
 
     }
+    // change the status of the currently viewing
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mNavBar != null){
+            mNavBar.getMenu().findItem(R.id.iHome).setChecked(true);
+
+        }
+    }
+    //ask for permission using the map
     @Override
     protected void onStart() {
         super.onStart();
@@ -135,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             int mProgressStatus = 0;
             while(mProgressStatus < 100) {
                 mProgressStatus += 2;
-                android.os.SystemClock.sleep(105);
+                android.os.SystemClock.sleep(108);
             }
 
             return restaurantList;

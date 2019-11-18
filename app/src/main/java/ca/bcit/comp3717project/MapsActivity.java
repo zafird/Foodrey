@@ -55,11 +55,9 @@ import java.util.stream.Collectors;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
-
     private GoogleMap mMap;
     private LocationManager locationManager;
     private float defaultZoomLevel = 12.0f;
-    private boolean animationInProgress = false;
     private FirebaseDatabase database;
     private Location lastKnownLocation;
     static private List<Restaurant> RestaurantList;
@@ -76,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         // Read from the database
         RestaurantList = MainActivity.restaurantList;
-        markersRestaurantMapList = new ArrayList<Restaurant>();
+        markersRestaurantMapList = new ArrayList<>();
         svMap = findViewById(R.id.svMap);
         mNavBar = findViewById(R.id.menu_navBar);
         mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(this, mNavBar));
@@ -119,6 +117,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mNavBar.getMenu().findItem(R.id.iMap).setChecked(true);
     }
     @Override
     protected void onRestart() {

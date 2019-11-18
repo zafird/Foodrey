@@ -112,8 +112,15 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
             }
         });
     }
+    //set the menu to true when active
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(mNavBar != null){
+            mNavBar.getMenu().findItem(R.id.iBook).setChecked(true);
 
-
+        }
+    }
     // Get Favorite Restaurants
     public void GetFavRestaurants(){
         SQLiteDatabase db = helper.getWritableDatabase();
