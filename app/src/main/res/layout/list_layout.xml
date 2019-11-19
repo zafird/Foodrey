@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<TableLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:stretchColumns="1"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
+    <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
@@ -16,49 +15,40 @@
             android:textAppearance="@style/Base.TextAppearance.AppCompat.Large"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextView"
-            android:minWidth="150sp" />
+            android:text="TextView" />
 
-    </LinearLayout>
+    </TableRow>
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal"
+    <TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" >
 
         <TextView
             android:id="@+id/textAddress"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="TextView" />
 
-        <TextView
-            android:id="@+id/textCity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:paddingLeft="10sp"/>
+        </TableRow>
 
-        <TextView
-            android:id="@+id/textRating"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:paddingLeft="10sp"
-            android:layout_gravity="right"
-            />
-
+    <TableRow
+        android:stretchColumns="*"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+            <TextView
+                android:id="@+id/textRating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="TextView"/>
+    </TableRow>
+    <TableRow
+        android:stretchColumns="*"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
         <TextView
             android:id="@+id/textInspectionDate"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView"
-            android:paddingLeft="10sp"
-            android:layout_gravity="right"
-            />
+            android:layout_width="0dp"
+            android:layout_height="wrap_content" />
+    </TableRow>
 
-
-    </LinearLayout>
-
-</LinearLayout>
+</TableLayout >
