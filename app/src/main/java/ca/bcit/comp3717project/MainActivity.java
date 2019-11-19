@@ -161,11 +161,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             setContentView(R.layout.activity_main);
             // set layout elements with data that from the result
             list_rest = findViewById(R.id.lvRestaurant);
-            setAdapter();
             mNavBar = findViewById(R.id.menu_navBar);
             mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
             editsearch = (SearchView) findViewById(R.id.svRestaurant);
             editsearch.setOnQueryTextListener(MainActivity.this);
+            setAdapter();
 
             list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

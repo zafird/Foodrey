@@ -128,7 +128,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private void getUniqueRestaurantList() {
         SQLiteOpenHelper helper = new MyFoodreyDbHelper(MapsActivity.this);
         SQLiteDatabase sqliteDb = helper.getReadableDatabase();
-        String query = "select a.* from restaurant as a, (select restaurant name, max(inspectiondate) date from restaurant) b where a.restaurant = b.name and a.InspectionDate = b.date";
+        String query = "select a.* from restaurant as a, (select restaurant name, max(inspectiondate) date from restaurant group by name) b where a.restaurant = b.name and a.InspectionDate = b.date";
         Cursor cursor = sqliteDb.rawQuery(query,null);
 
         RestaurantList.clear();
