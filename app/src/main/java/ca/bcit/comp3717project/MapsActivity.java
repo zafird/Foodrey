@@ -5,6 +5,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Address;
@@ -53,6 +56,8 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.stream.Collectors;
 
+import static ca.bcit.comp3717project.MainActivity.restaurantList;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, GoogleMap.OnMyLocationButtonClickListener,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
     private GoogleMap mMap;
@@ -73,7 +78,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Read from the database
-        RestaurantList = MainActivity.restaurantList;
+        RestaurantList = new ArrayList<Restaurant>();
+        getUniqueRestaurantList();
         markersRestaurantMapList = new ArrayList<>();
         svMap = findViewById(R.id.svMap);
         mNavBar = findViewById(R.id.menu_navBar);
@@ -117,6 +123,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
+    }
+
+    private void getUniqueRestaurantList() {
+        SQLiteOpenHelper helper = new MyFoodreyDbHelper(MapsActivity.this);
+        SQLiteDatabase sqliteDb = helper.getReadableDatabase();
+        String query = "select a.* from restaurant as a, (select restaurant name, max(inspectiondate) date from restaurant) b where a.restaurant = b.name and a.InspectionDate = b.date";
+        Cursor cursor = sqliteDb.rawQuery(query,null);
+
+        RestaurantList.clear();
+        while (cursor.moveToNext()){
+            Restaurant r = new Restaurant();
+            r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+            r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+            r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+            r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+            r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
+
+            RestaurantList.add(r);
+        }
     }
 
     @Override

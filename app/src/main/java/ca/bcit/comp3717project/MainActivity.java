@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
         new MyTask().execute();
 
-
     }
     // change the status of the currently viewing
     @Override
@@ -108,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             if(cnt > 0 ) {
                 String query = "SELECT * FROM Restaurant";
                 Cursor cursor = sqliteDb.rawQuery(query,null);
+
                 restaurantList.clear();
                 while (cursor.moveToNext()){
                     Restaurant r = new Restaurant();
@@ -135,6 +135,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                 restaurantList.add(restaurant);
                             }
                         }
+
+                        //To invoke firebase syncing to sqlite local DB
+                        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
+                        //list_rest.setAdapter(adapter); // it will be called in onPostExecute()
                     }
 
                     @Override
