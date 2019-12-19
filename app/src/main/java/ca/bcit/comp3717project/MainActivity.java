@@ -36,6 +36,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +53,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private LocationManager locationManager;
     ListViewAdapter adapter;
     SearchView editsearch;
+    // URL to get contacts JSON
+    private static String SERVICE_URL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1";
     static ArrayList<Restaurant> restaurantList = new ArrayList<>();
     ListView list_rest;
     private Bundle extras;
@@ -71,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
         dbRef = FirebaseDatabase.getInstance().getReference("restaurants");
         new MyTask().execute();
-
 
     }
     // change the status of the currently viewing
@@ -98,6 +103,39 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         @Override
         protected List<Restaurant> doInBackground(Uri... params) {
+            HttpHandler sh = new HttpHandler();
+            String jsonStr = null;
+            jsonStr = sh.makeServiceCall(SERVICE_URL);
+
+
+            if (jsonStr != null) {
+
+                try {
+                    JSONObject jsonArry = new JSONObject(jsonStr);
+                    JSONObject jArray = jsonArry.getJSONObject("result");
+                    JSONArray jArr = jArray.getJSONArray("records");
+                    for (int i = 0; i < jArr.length(); i++) {
+                        JSONObject c = jArr.getJSONObject(i);
+                        int id = c.getInt("_id");
+                        String NumCritical = c.getString("NumCritical");
+                        String HazardRating = c.getString("HazardRating");
+                        String NumNonCritical = c.getString("NumNonCritical");
+                        String InspectionDate = c.getString("InspectionDate");
+                        String InspType = c.getString("InspType");
+                        String ViolLump = c.getString("ViolLump");
+                        String TrackingNumber = c.getString("TrackingNumber");
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Failed!!!");
+                    e.printStackTrace();
+                }
+
+            }else{
+                Log.e(TAG, "json null ");
+
+            }
+
+
             helper = new MyFoodreyDbHelper(MainActivity.this);
             SQLiteDatabase sqliteDb = helper.getReadableDatabase();
             Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
@@ -125,21 +163,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 }
             } else {
 
-                dbRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        restaurantList.clear();
-                        for (DataSnapshot bloodPressureSnapshot : dataSnapshot.getChildren()) {
-                            Restaurant restaurant = bloodPressureSnapshot.getValue(Restaurant.class);
-                            if (!restaurant.getNAME().equals("#N/A")) {
-                                restaurantList.add(restaurant);
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) { }
-                });
             }
             //allows the loading screent to load
             int mProgressStatus = 0;

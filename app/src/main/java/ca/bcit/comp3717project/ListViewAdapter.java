@@ -1,3 +1,4 @@
+
 package ca.bcit.comp3717project;
 
 import android.content.Context;
@@ -82,7 +83,7 @@ public class ListViewAdapter extends BaseAdapter {
             }
             holder.name = (TextView) view.findViewById(R.id.restaurantName);
             holder.address= (TextView) view.findViewById(R.id.textAddress);
-            holder.city= (TextView) view.findViewById(R.id.textCity);
+//            holder.city= (TextView) view.findViewById(R.id.textCity);
             holder.rating= (TextView) view.findViewById(R.id.textRating);
             holder.inspectionDate= (TextView) view.findViewById(R.id.textInspectionDate);
             view.setTag(holder);
@@ -95,10 +96,11 @@ public class ListViewAdapter extends BaseAdapter {
 
         // Set the results into TextViews
         holder.name.setText(restaurantList.get(position).getNAME());
-        holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS());
-        holder.city.setText(restaurantList.get(position).getPHYSICALCITY());
+        holder.address.setText(restaurantList.get(position).getPHYSICALADDRESS() +
+                " " + restaurantList.get(position).getPHYSICALCITY());
+//        holder.city.setText(restaurantList.get(position).getPHYSICALCITY());
 
-        holder.rating.setText(restaurantList.get(position).getHazardRating());
+        holder.rating.setText(String.format("Hazard Rating: %s", restaurantList.get(position).getHazardRating()));
         if("Low".equals(restaurantList.get(position).getHazardRating())){
             holder.rating.setTextColor(Color.GREEN);
         } else if("Moderate".equals(restaurantList.get(position).getHazardRating())){
@@ -111,7 +113,7 @@ public class ListViewAdapter extends BaseAdapter {
         try {
             Date d1 = sdf.parse(restaurantList.get(position).getInspectionDate());
             sdf.applyPattern("MM/dd/yyyy");
-            holder.inspectionDate.setText(sdf.format(d1));
+            holder.inspectionDate.setText(String.format("InspectionDate: %s", sdf.format(d1)));
         } catch (ParseException e) {
             e.printStackTrace();
         }
