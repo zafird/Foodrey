@@ -162,10 +162,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 intent.putExtra("name",r.getNAME());
                 intent.putExtra("address",r.getPHYSICALADDRESS());
                 intent.putExtra("city",r.getPHYSICALCITY());
-                intent.putExtra("rating",r.getHazardRating());
-                intent.putExtra("date",r.getInspectionDate());
-                intent.putExtra("critical",r.getNumCritical());
-                intent.putExtra("noncritical",r.getNumNonCritical());
+//                intent.putExtra("rating",r.getHazardRating());
+//                intent.putExtra("date",r.getInspectionDate());
+//                intent.putExtra("critical",r.getNumCritical());
+//                intent.putExtra("noncritical",r.getNumNonCritical());
                 intent.putExtra("latitude",r.getLATITUDE());
                 intent.putExtra("longitude",r.getLONGITUDE());
                 startActivity(intent);
@@ -185,7 +185,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             LatLng loc = new LatLng(Float.valueOf(r.getLATITUDE()),Float.valueOf(r.getLONGITUDE()));
             findDistanceNearByRestaurant(loc);
-            addMarkerMap(loc,r.getNAME(),findDistanceNearByRestaurant(loc),r.getHazardRating());
+//            addMarkerMap(loc,r.getNAME(),findDistanceNearByRestaurant(loc),r.getHazardRating());
             count --;
 
         }
@@ -209,8 +209,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         Double.valueOf(rest.getLONGITUDE()));
 
                 if (findDistanceNearByRestaurant(testRestaurant) < distanceTravel ) {
-                    addMarkerMap(testRestaurant, rest.getNAME(),
-                            findDistanceNearByRestaurant(testRestaurant),rest.getHazardRating());
+//                    addMarkerMap(testRestaurant, rest.getNAME(),
+//                            findDistanceNearByRestaurant(testRestaurant),rest.getHazardRating());
                     counter++;
                     markersRestaurantMapList.add(rest);
                     if(findDistanceNearByRestaurant(testRestaurant) > longDist){

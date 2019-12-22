@@ -54,8 +54,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ListViewAdapter adapter;
     SearchView editsearch;
     // URL to get contacts JSON
-    private static String SERVICE_URL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1";
+    private static String SERVICE_URL = "http://data.surrey.ca/api/action/datastore_search?resource_id=0e5d04a2-be9b-40fe-8de2-e88362ea916b&limit=2000";
     static ArrayList<Restaurant> restaurantList = new ArrayList<>();
+    static ArrayList<InspectionRecords> inspectionRecordList = new ArrayList<>();
     ListView list_rest;
     private Bundle extras;
 
@@ -103,38 +104,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         @Override
         protected List<Restaurant> doInBackground(Uri... params) {
-            HttpHandler sh = new HttpHandler();
-            String jsonStr = null;
-            jsonStr = sh.makeServiceCall(SERVICE_URL);
-
-
-            if (jsonStr != null) {
-
-                try {
-                    JSONObject jsonArry = new JSONObject(jsonStr);
-                    JSONObject jArray = jsonArry.getJSONObject("result");
-                    JSONArray jArr = jArray.getJSONArray("records");
-                    for (int i = 0; i < jArr.length(); i++) {
-                        JSONObject c = jArr.getJSONObject(i);
-                        int id = c.getInt("_id");
-                        String NumCritical = c.getString("NumCritical");
-                        String HazardRating = c.getString("HazardRating");
-                        String NumNonCritical = c.getString("NumNonCritical");
-                        String InspectionDate = c.getString("InspectionDate");
-                        String InspType = c.getString("InspType");
-                        String ViolLump = c.getString("ViolLump");
-                        String TrackingNumber = c.getString("TrackingNumber");
-                    }
-                } catch (JSONException e) {
-                    Log.e(TAG, "Failed!!!");
-                    e.printStackTrace();
-                }
-
-            }else{
-                Log.e(TAG, "json null ");
-
-            }
-
 
             helper = new MyFoodreyDbHelper(MainActivity.this);
             SQLiteDatabase sqliteDb = helper.getReadableDatabase();
@@ -162,17 +131,77 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     restaurantList.add(r);
                 }
             } else {
+                HttpHandler sh = new HttpHandler();
+                String jsonStr = null;
+                jsonStr = sh.makeServiceCall(SERVICE_URL);
+                String urlAPICALL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1&q=";
+                String jsonStrA = null;
 
 
+                if (jsonStr != null) {
+
+                    try {
+                        JSONObject jsonArry = new JSONObject(jsonStr);
+                        JSONObject jArray = jsonArry.getJSONObject("result");
+                        JSONArray jArr = jArray.getJSONArray("records");
+                        for (int i = 0; i < jArr.length(); i++) {
+                            JSONObject c = jArr.getJSONObject(i);
+                            String NAME = c.getString("NAME");
+                            String LONGITUDE = c.getString("LONGITUDE");
+                            String FACTYPE = c.getString("FACTYPE");
+                            String LATITUDE = c.getString("LATITUDE");
+                            String TRACKINGNUMBER = c.getString("TRACKINGNUMBER");
+                            int _id = c.getInt("_id");
+                            String PHYSICALCITY = c.getString("PHYSICALCITY");
+                            String PHYSICALADDRESS = c.getString("PHYSICALADDRESS");
+                            //getting inspect records
+                            jsonStrA = sh.makeServiceCall(urlAPICALL+TRACKINGNUMBER);
+                            JSONObject jsonArryA = new JSONObject(jsonStrA);
+                            JSONObject jArrayA = jsonArryA.getJSONObject("result");
+//                            String ss = jArrayA.getString("resource_id");
+                            JSONArray jArrA = jArrayA.getJSONArray("records");
+                            int NumCritical = 0;
+                            int NumNonCritical = 0;
+                            String HazardRating = "Low";
+                            String InspectionDate = "none";
+                            if(jArrA.length() != 0){
+                                JSONObject bk = jArrA.getJSONObject(0);
+                                NumCritical = bk.getInt("NumCritical");
+                                NumNonCritical = bk.getInt("NumNonCritical");
+                                HazardRating = bk.getString("HazardRating");
+                                InspectionDate = bk.getString("InspectionDate");
+                            }
+
+                            // tmp hash map for single restaurant
+                            Restaurant restRecords = new Restaurant();
+                            restRecords.setNAME(NAME);
+                            restRecords.setLONGITUDE(LONGITUDE);
+                            restRecords.setFACTYPE(FACTYPE);
+                            restRecords.setLATITUDE(LATITUDE);
+                            restRecords.setTrackingNumber(TRACKINGNUMBER);
+                            restRecords.setPHYSICALCITY(PHYSICALCITY);
+                            restRecords.setPHYSICALADDRESS(PHYSICALADDRESS);
+                            restRecords.set_id(_id);
+                            restRecords.setNumCritical(NumCritical);
+                            restRecords.setNumNonCritical(NumNonCritical);
+                            restRecords.setHazardRating(HazardRating);
+                            restRecords.setInspectionDate(InspectionDate);
+
+                            restaurantList.add(restRecords);
+                        }
+                    } catch (JSONException e) {
+                        Log.e(TAG, "Failed!!!");
+                        e.printStackTrace();
+                    }
+
+                }else{
+                    Log.e(TAG, "json null ");
+
+                }
+                //To invoke firebase syncing to sqlite local DB
+                ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
             }
-            //allows the loading screent to load
-            int mProgressStatus = 0;
-            while(mProgressStatus < 100) {
-                mProgressStatus += 2;
-                android.os.SystemClock.sleep(108);
-            }
-
-            return restaurantList;
+            return null;
         }
 
         @Override

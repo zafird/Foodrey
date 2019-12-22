@@ -2,7 +2,7 @@ package ca.bcit.comp3717project;
 
 import java.util.List;
 
-public class Records
+public class InspectionRecords
 {
     private String NumCritical;
 

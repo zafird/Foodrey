@@ -42,11 +42,11 @@ public class ListViewAdapter extends BaseAdapter {
     public ListViewAdapter(Context context, List<Restaurant> restaurantList, boolean dataInit) {
         this(context, restaurantList);
 
-        if(dataInit) {
-            SQLiteOpenHelper helper = new MyFoodreyDbHelper(mContext);
-            SQLiteDatabase sqliteDb = helper.getWritableDatabase();
-            ((MyFoodreyDbHelper)helper).getSyncFirebaseDB(sqliteDb, (ArrayList<Restaurant>) restaurantList);
-        }
+//        if(dataInit) {
+//            SQLiteOpenHelper helper = new MyFoodreyDbHelper(mContext);
+//            SQLiteDatabase sqliteDb = helper.getWritableDatabase();
+//            ((MyFoodreyDbHelper)helper).getSyncFirebaseDB(sqliteDb, (ArrayList<Restaurant>) restaurantList);
+//        }
     }
 
     public class ViewHolder {
@@ -111,9 +111,14 @@ public class ListViewAdapter extends BaseAdapter {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         try {
-            Date d1 = sdf.parse(restaurantList.get(position).getInspectionDate());
-            sdf.applyPattern("MM/dd/yyyy");
-            holder.inspectionDate.setText(String.format("InspectionDate: %s", sdf.format(d1)));
+            String dateStr = restaurantList.get(position).getInspectionDate();
+            if(dateStr.equals("none")){
+                holder.inspectionDate.setText(dateStr);
+            }else{
+                Date d1 = sdf.parse(dateStr);
+                sdf.applyPattern("MM/dd/yyyy");
+                holder.inspectionDate.setText(String.format("InspectionDate: %s", sdf.format(d1)));
+            }
         } catch (ParseException e) {
             e.printStackTrace();
         }

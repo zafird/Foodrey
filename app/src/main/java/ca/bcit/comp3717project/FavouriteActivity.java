@@ -82,10 +82,10 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
                 intent.putExtra("name",res.getNAME());
                 intent.putExtra("address",res.getPHYSICALADDRESS());
                 intent.putExtra("city",res.getPHYSICALCITY());
-                intent.putExtra("rating",res.getHazardRating());
-                intent.putExtra("date",res.getInspectionDate());
-                intent.putExtra("critical",res.getNumCritical());
-                intent.putExtra("noncritical",res.getNumNonCritical());
+//                intent.putExtra("rating",res.getHazardRating());
+//                intent.putExtra("date",res.getInspectionDate());
+//                intent.putExtra("critical",res.getNumCritical());
+//                intent.putExtra("noncritical",res.getNumNonCritical());
                 intent.putExtra("latitude",res.getLATITUDE());
                 intent.putExtra("longitude",res.getLONGITUDE());
                 startActivity(intent);
@@ -132,10 +132,10 @@ public class FavouriteActivity  extends AppCompatActivity implements SearchView.
             r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
             r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
             r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
-            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
-            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
-            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
-            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+//            r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+//            r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+//            r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+//            r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
             r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
             r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
 

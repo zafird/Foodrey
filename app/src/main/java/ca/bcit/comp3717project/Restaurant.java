@@ -16,26 +16,10 @@ public class Restaurant  implements Serializable {
     private String PHYSICALCITY;
     private String TrackingNumber;
     private String ViolLump;
+    private int _id;
     private boolean _favorite;
 
-    public Restaurant() {
-    }
 
-/*    public Restaurant(String FACTYPE, String hazardRating, String inspType, String inspectionDate, String LATITUDE, String LONGITUDE, String NAME, int numCritical, int numNonCritical, String PHYSICALADDRESS, String PHYSICALCITY, String trackingNumber, String violLump) {
-        this.FACTYPE = FACTYPE;
-        HazardRating = hazardRating;
-        InspType = inspType;
-        InspectionDate = inspectionDate;
-        this.LATITUDE = LATITUDE;
-        this.LONGITUDE = LONGITUDE;
-        this.NAME = NAME;
-        NumCritical = numCritical;
-        NumNonCritical = numNonCritical;
-        this.PHYSICALADDRESS = PHYSICALADDRESS;
-        this.PHYSICALCITY = PHYSICALCITY;
-        TrackingNumber = trackingNumber;
-        ViolLump = violLump;
-    }*/
 
 // Getter Methods
 
@@ -146,4 +130,12 @@ public class Restaurant  implements Serializable {
     }
 
     public boolean is_favorite() { return _favorite; }
+
+    public int get_id() {
+        return _id;
+    }
+
+    public void set_id(int _id) {
+        this._id = _id;
+    }
 }
