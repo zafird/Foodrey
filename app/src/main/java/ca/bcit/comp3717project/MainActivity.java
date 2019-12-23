@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
                             restaurantList.add(restRecords);
                         }
+                        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restaurantList, true);
                     } catch (JSONException e) {
                         Log.e(TAG, "Failed!!!");
                         e.printStackTrace();

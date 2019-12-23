@@ -114,8 +114,6 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
 
-
-
     }
 
 
@@ -146,10 +144,10 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
                 r.setNAME(restaurantName);
                 r.setPHYSICALCITY(restaurantCity);
                 r.setPHYSICALADDRESS(restaurantAddress);
-//                r.setHazardRating(restaurantHazardValue);
-//                r.setInspectionDate(restaurantDateValue);
-//                r.setNumCritical(restaurantCriticalValue);
-//                r.setNumNonCritical(restaurantNonCriticalValue);
+                r.setHazardRating(restaurantHazardValue);
+                r.setInspectionDate(restaurantDateValue);
+                r.setNumCritical(restaurantCriticalValue);
+                r.setNumNonCritical(restaurantNonCriticalValue);
                 r.setLATITUDE(String.valueOf(latitude));
                 r.setLONGITUDE(String.valueOf(longitude));
                 ((MyFoodreyDbHelper)helper).insertFavorite(sqliteDb, r);
