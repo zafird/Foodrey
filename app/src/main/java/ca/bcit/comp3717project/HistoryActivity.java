@@ -1,5 +1,6 @@
 package ca.bcit.comp3717project;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,17 +13,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HistoryActivity extends AppCompatActivity {
     private ArrayList<InspectionRecords> inspectionRecordList = new ArrayList<>();
     private final String TAG = "COMP3717Main_History";
     private ListView lv;
+    private String TrackingNumber;
+    private Bundle extras;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         new MyTask().execute();
         setContentView(R.layout.activity_history);
+        extras = getIntent().getExtras();
         lv = findViewById(R.id.inspRecordList);
     }
 
@@ -35,9 +40,11 @@ public class HistoryActivity extends AppCompatActivity {
         protected Void doInBackground(Void... arg0) {
             HttpHandler webHandler = new HttpHandler();
             String jsonStr = null;
-            String urlAPICALL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1&q=SWOD-APSP3X";
+            String urlAPICALL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1&q=";
 
-            jsonStr = webHandler.makeServiceCall(urlAPICALL);
+            Intent intent = getIntent();
+            TrackingNumber = intent.getStringExtra("TrackingNumber");
+            jsonStr = webHandler.makeServiceCall(urlAPICALL+TrackingNumber);
 
             if (jsonStr != null) {
 
@@ -54,12 +61,19 @@ public class HistoryActivity extends AppCompatActivity {
                         String InspType = c.getString("InspType");
                         String ViolLump = c.getString("ViolLump");
                         String TrackingNumber = c.getString("TrackingNumber");
-                        String _id = c.getString("_id");
+                        int _id = c.getInt("_id");
 
 
                         // tmp hash map for single restaurant
                         InspectionRecords inpectionRecords = new InspectionRecords();
-
+                        inpectionRecords.setNumCritical(NumCritical);
+                        inpectionRecords.setHazardRating(HazardRating);
+                        inpectionRecords.setNumNonCritical(NumNonCritical);
+                        inpectionRecords.setInspType(InspType);
+                        inpectionRecords.setViolLump(ViolLump);
+                        inpectionRecords.setTrackingNumber(TrackingNumber);
+                        inpectionRecords.set_id(_id);
+                        inpectionRecords.setInspectionDate(InspectionDate);
                         inspectionRecordList.add(inpectionRecords);
                     }
                 } catch (JSONException e) {

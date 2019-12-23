@@ -74,9 +74,9 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             }
         });
 
-
+        Intent intent = getIntent();
+        TrackingNumber = intent.getStringExtra("TrackingNumber");
         restaurantName = (String) Objects.requireNonNull(getIntent().getExtras()).getString("name");
-        TrackingNumber = (String) Objects.requireNonNull(getIntent().getExtras()).getString("TrackingNumber");
         restaurantAddress = (String) Objects.requireNonNull(getIntent().getExtras()).getString("address");
         restaurantCity = (String) Objects.requireNonNull(getIntent().getExtras()).getString("city");
         restaurantHazardValue = (String) Objects.requireNonNull(getIntent().getExtras()).getString("rating");
@@ -145,7 +145,7 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
 
     private void setHistoryInspection() {
         Intent intent = new Intent(DetailActivity.this, HistoryActivity.class);
-        intent.putExtra("irl", TrackingNumber);
+        intent.putExtra("TrackingNumber", TrackingNumber);
         startActivity(intent);
     }
 

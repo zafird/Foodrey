@@ -15,8 +15,10 @@ import java.util.ArrayList;
 
 public class InspectionRecordsAdapter  extends ArrayAdapter<InspectionRecords> {
     Context _context;
+    ArrayList<InspectionRecords> inspRecords;
     public InspectionRecordsAdapter(Context context, ArrayList<InspectionRecords> inspRecords) {
         super(context, 0, inspRecords);
+        inspRecords = inspRecords;
         _context = context;
     }
     @Override
@@ -31,9 +33,17 @@ public class InspectionRecordsAdapter  extends ArrayAdapter<InspectionRecords> {
         // Lookup view for data population
         TextView tvInspDate = convertView.findViewById(R.id.tvInspDate);
         TextView tvInspType = convertView.findViewById(R.id.tvInspType);
+        TextView tvHazardRating = convertView.findViewById(R.id.tvHazardRating);
+        TextView tvNumCritical = convertView.findViewById(R.id.tvNumCritical);
+        TextView tvNumNonCritical = convertView.findViewById(R.id.tvNumNonCritical);
+        TextView ViolLump = convertView.findViewById(R.id.ViolLump);
         // Populate the data into the template view using the data object
         tvInspDate.setText(record.getInspectionDate());
         tvInspType.setText(record.getInspType());
+        tvHazardRating.setText(record.getHazardRating());
+        tvNumCritical.setText(record.getNumCritical());
+        tvNumNonCritical.setText(record.getNumNonCritical());
+        ViolLump.setText(record.getViolLump());
 
 
         // Return the completed view to render on screen
