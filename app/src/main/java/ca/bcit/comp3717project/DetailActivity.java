@@ -10,10 +10,15 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +29,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements OnMapReadyCallback{
-
+    private final String TAG = "COMP3717Main_DetailActivity";
     private GoogleMap googleMap;
     private Double latitude;
     private Double longitude;
@@ -38,9 +49,12 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
     private String restaurantCity;
     private String restaurantHazardValue;
     private String restaurantDateValue;
+    private String TrackingNumber;
     private int restaurantCriticalValue;
     private int restaurantNonCriticalValue;
     private SQLiteDatabase sqliteDb;
+
+
 
 
     @Override
@@ -48,10 +62,21 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+
         ArrayAdapter<Restaurant> arrayAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_list_item_1);
 
+        Button btnHistory = findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setHistoryInspection();
+            }
+        });
+
+
         restaurantName = (String) Objects.requireNonNull(getIntent().getExtras()).getString("name");
+        TrackingNumber = (String) Objects.requireNonNull(getIntent().getExtras()).getString("TrackingNumber");
         restaurantAddress = (String) Objects.requireNonNull(getIntent().getExtras()).getString("address");
         restaurantCity = (String) Objects.requireNonNull(getIntent().getExtras()).getString("city");
         restaurantHazardValue = (String) Objects.requireNonNull(getIntent().getExtras()).getString("rating");
@@ -114,6 +139,14 @@ public class DetailActivity extends AppCompatActivity implements OnMapReadyCallb
             e.printStackTrace();
         }
 
+    }
+
+
+
+    private void setHistoryInspection() {
+        Intent intent = new Intent(DetailActivity.this, HistoryActivity.class);
+        intent.putExtra("irl", TrackingNumber);
+        startActivity(intent);
     }
 
 

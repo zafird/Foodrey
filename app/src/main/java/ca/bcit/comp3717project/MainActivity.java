@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     // URL to get contacts JSON
     private static String SERVICE_URL = "http://data.surrey.ca/api/action/datastore_search?resource_id=0e5d04a2-be9b-40fe-8de2-e88362ea916b&limit=2000";
     static ArrayList<Restaurant> restaurantList = new ArrayList<>();
-    static ArrayList<InspectionRecords> inspectionRecordList = new ArrayList<>();
     ListView list_rest;
     private Bundle extras;
 
@@ -156,20 +155,20 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             String PHYSICALADDRESS = c.getString("PHYSICALADDRESS");
                             //getting inspect records
                             jsonStrA = sh.makeServiceCall(urlAPICALL+TRACKINGNUMBER);
-                            JSONObject jsonArryA = new JSONObject(jsonStrA);
-                            JSONObject jArrayA = jsonArryA.getJSONObject("result");
-//                            String ss = jArrayA.getString("resource_id");
-                            JSONArray jArrA = jArrayA.getJSONArray("records");
+                            JSONObject jsonArryInsp = new JSONObject(jsonStrA);
+                            JSONObject jObjectInsp = jsonArryInsp.getJSONObject("result");
+
+                            JSONArray jArryInsp = jObjectInsp.getJSONArray("records");
                             int NumCritical = 0;
                             int NumNonCritical = 0;
                             String HazardRating = "Low";
                             String InspectionDate = "none";
-                            if(jArrA.length() != 0){
-                                JSONObject bk = jArrA.getJSONObject(0);
-                                NumCritical = bk.getInt("NumCritical");
-                                NumNonCritical = bk.getInt("NumNonCritical");
-                                HazardRating = bk.getString("HazardRating");
-                                InspectionDate = bk.getString("InspectionDate");
+                            if(jArryInsp.length() != 0){
+                                JSONObject lastestInsp = jArryInsp.getJSONObject(0);
+                                NumCritical = lastestInsp.getInt("NumCritical");
+                                NumNonCritical = lastestInsp.getInt("NumNonCritical");
+                                HazardRating = lastestInsp.getString("HazardRating");
+                                InspectionDate = lastestInsp.getString("InspectionDate");
                             }
 
                             // tmp hash map for single restaurant
@@ -233,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     intent.putExtra("noncritical",res.getNumNonCritical());
                     intent.putExtra("latitude",res.getLATITUDE());
                     intent.putExtra("longitude",res.getLONGITUDE());
+                    intent.putExtra("TrackingNumber",res.getTrackingNumber());
                     startActivity(intent);
                 }
             });
