@@ -46,7 +46,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
-    private final String TAG = "COMP3717Main";
+    private static final String TAG = "COMP3717Main";
+    private static final String URI_template_Surrey_public_data = "https://data.surrey.ca/api/action/datastore_search?resource_id=";
+    private static final String URI_restaurant = "30b38b66-649f-4507-a632-d5f6f5fe87f1";
+    private static final String URI_inspection = "0e5d04a2-be9b-40fe-8de2-e88362ea916b";
+
     private DatabaseReference dbRef;
     private BottomNavigationView mNavBar;
     private SQLiteOpenHelper helper;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     ListViewAdapter adapter;
     SearchView editsearch;
     // URL to get contacts JSON
-    private static String SERVICE_URL = "http://data.surrey.ca/api/action/datastore_search?resource_id=0e5d04a2-be9b-40fe-8de2-e88362ea916b&limit=2000";
+    private static String SERVICE_URL = URI_template_Surrey_public_data + "0e5d04a2-be9b-40fe-8de2-e88362ea916b&limit=2000";
     static ArrayList<Restaurant> restaurantList = new ArrayList<>();
     ListView list_rest;
     private Bundle extras;
@@ -104,36 +108,36 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         @Override
         protected List<Restaurant> doInBackground(Uri... params) {
 
-            helper = new MyFoodreyDbHelper(MainActivity.this);
-            SQLiteDatabase sqliteDb = helper.getReadableDatabase();
-            Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
-            mCount.moveToFirst();
-            int cnt = mCount.getInt(0);
-            mCount.close();
+//            helper = new MyFoodreyDbHelper(MainActivity.this);
+//            SQLiteDatabase sqliteDb = helper.getReadableDatabase();
+//            Cursor mCount= sqliteDb.rawQuery("SELECT count(*) cnt FROM Restaurant", null);
+//            mCount.moveToFirst();
+//            int cnt = mCount.getInt(0);
+//            mCount.close();
 
-            if(cnt > 0 ) {
-                String query = "SELECT * FROM Restaurant";
-                Cursor cursor = sqliteDb.rawQuery(query,null);
-                restaurantList.clear();
-                while (cursor.moveToNext()){
-                    Restaurant r = new Restaurant();
-                    r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
-                    r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
-                    r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
-                    r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
-                    r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
-                    r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
-                    r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
-                    r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
-                    r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
-
-                    restaurantList.add(r);
-                }
+            if(false) { //cnt > 0 ) {
+//                String query = "SELECT * FROM Restaurant";
+//                Cursor cursor = sqliteDb.rawQuery(query,null);
+//                restaurantList.clear();
+//                while (cursor.moveToNext()){
+//                    Restaurant r = new Restaurant();
+//                    r.setNAME(cursor.getString(cursor.getColumnIndex("RESTAURANT")));
+//                    r.setPHYSICALCITY(cursor.getString(cursor.getColumnIndex("CITY")));
+//                    r.setPHYSICALADDRESS(cursor.getString(cursor.getColumnIndex("ADDRESS")));
+//                    r.setHazardRating(cursor.getString(cursor.getColumnIndex("HazardRating")));
+//                    r.setInspectionDate(cursor.getString(cursor.getColumnIndex("InspectionDate")));
+//                    r.setNumCritical(cursor.getInt(cursor.getColumnIndex("NumCritical")));
+//                    r.setNumNonCritical(cursor.getInt(cursor.getColumnIndex("NumNonCritical")));
+//                    r.setLATITUDE(cursor.getString(cursor.getColumnIndex("LATITUDE")));
+//                    r.setLONGITUDE(cursor.getString(cursor.getColumnIndex("LONGITUDE")));
+//
+//                    restaurantList.add(r);
+//                }
             } else {
                 HttpHandler sh = new HttpHandler();
                 String jsonStr = null;
                 jsonStr = sh.makeServiceCall(SERVICE_URL);
-                String urlAPICALL = "http://data.surrey.ca/api/action/datastore_search?resource_id=30b38b66-649f-4507-a632-d5f6f5fe87f1&q=";
+                String urlAPICALL = URI_template_Surrey_public_data + "30b38b66-649f-4507-a632-d5f6f5fe87f1&q=";
                 String jsonStrA = null;
 
 
@@ -153,23 +157,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             int _id = c.getInt("_id");
                             String PHYSICALCITY = c.getString("PHYSICALCITY");
                             String PHYSICALADDRESS = c.getString("PHYSICALADDRESS");
-                            //getting inspect records
-                            jsonStrA = sh.makeServiceCall(urlAPICALL+TRACKINGNUMBER);
-                            JSONObject jsonArryInsp = new JSONObject(jsonStrA);
-                            JSONObject jObjectInsp = jsonArryInsp.getJSONObject("result");
 
-                            JSONArray jArryInsp = jObjectInsp.getJSONArray("records");
-                            int NumCritical = 0;
-                            int NumNonCritical = 0;
-                            String HazardRating = "Low";
-                            String InspectionDate = "none";
-                            if(jArryInsp.length() != 0){
-                                JSONObject lastestInsp = jArryInsp.getJSONObject(0);
-                                NumCritical = lastestInsp.getInt("NumCritical");
-                                NumNonCritical = lastestInsp.getInt("NumNonCritical");
-                                HazardRating = lastestInsp.getString("HazardRating");
-                                InspectionDate = lastestInsp.getString("InspectionDate");
-                            }
+                            //getting inspect records
+//                            jsonStrA = sh.makeServiceCall(urlAPICALL+TRACKINGNUMBER);
+//                            JSONObject jsonArryInsp = new JSONObject(jsonStrA);
+//                            JSONObject jObjectInsp = jsonArryInsp.getJSONObject("result");
+//
+//                            JSONArray jArryInsp = jObjectInsp.getJSONArray("records");
+//                            int NumCritical = 0;
+//                            int NumNonCritical = 0;
+//                            String HazardRating = "Low";
+//                            String InspectionDate = "none";
+//                            if(jArryInsp.length() != 0){
+//                                JSONObject lastestInsp = jArryInsp.getJSONObject(0);
+//                                NumCritical = lastestInsp.getInt("NumCritical");
+//                                NumNonCritical = lastestInsp.getInt("NumNonCritical");
+//                                HazardRating = lastestInsp.getString("HazardRating");
+//                                InspectionDate = lastestInsp.getString("InspectionDate");
+//                            }
 
                             // tmp hash map for single restaurant
                             Restaurant restRecords = new Restaurant();
@@ -181,10 +186,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             restRecords.setPHYSICALCITY(PHYSICALCITY);
                             restRecords.setPHYSICALADDRESS(PHYSICALADDRESS);
                             restRecords.set_id(_id);
-                            restRecords.setNumCritical(NumCritical);
-                            restRecords.setNumNonCritical(NumNonCritical);
-                            restRecords.setHazardRating(HazardRating);
-                            restRecords.setInspectionDate(InspectionDate);
+//                            restRecords.setNumCritical(NumCritical);
+//                            restRecords.setNumNonCritical(NumNonCritical);
+//                            restRecords.setHazardRating(HazardRating);
+//                            restRecords.setInspectionDate(InspectionDate);
 
                             restaurantList.add(restRecords);
                         }
@@ -211,10 +216,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             // set layout elements with data that from the result
             list_rest = findViewById(R.id.lvRestaurant);
             setAdapter();
-            mNavBar = findViewById(R.id.menu_navBar);
-            mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
-            editsearch = (SearchView) findViewById(R.id.svRestaurant);
-            editsearch.setOnQueryTextListener(MainActivity.this);
 
             list_rest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -236,6 +237,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     startActivity(intent);
                 }
             });
+
+            mNavBar = findViewById(R.id.menu_navBar);
+            if(null != mNavBar) {
+                mNavBar.setOnNavigationItemSelectedListener(new BottomNavigationViewListener(MainActivity.this, mNavBar));
+            }
+            editsearch = (SearchView) findViewById(R.id.svRestaurant);
+            if(null != editsearch) {
+                editsearch.setOnQueryTextListener(MainActivity.this);
+            }
+
             //listen to the close button on the search view and populate 100 items on the list
             editsearch.setOnCloseListener(new SearchView.OnCloseListener() {
                 @Override
@@ -258,9 +269,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
             count++;
         }
-        list_rest.setAdapter(null);
-        ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restSerachList);
-        list_rest.setAdapter(adapter);
+        if(null != list_rest) {
+            list_rest.setAdapter(null);
+            ListViewAdapter adapter = new ListViewAdapter(MainActivity.this, restSerachList);
+            list_rest.setAdapter(adapter);
+        }
     }
 
 

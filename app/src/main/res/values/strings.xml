@@ -39,4 +39,5 @@
     <string name="hazard_rating">Hazard Rating:</string>
     <string name="non_critical">Non-Critical</string>
     <string name="critical">Critical</string>
+    <string name="TextView">TextView</string>
 </resources>

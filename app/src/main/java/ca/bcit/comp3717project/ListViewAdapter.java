@@ -84,8 +84,8 @@ public class ListViewAdapter extends BaseAdapter {
             holder.name = (TextView) view.findViewById(R.id.restaurantName);
             holder.address= (TextView) view.findViewById(R.id.textAddress);
 //            holder.city= (TextView) view.findViewById(R.id.textCity);
-            holder.rating= (TextView) view.findViewById(R.id.textRating);
-            holder.inspectionDate= (TextView) view.findViewById(R.id.textInspectionDate);
+//            holder.rating= (TextView) view.findViewById(R.id.textRating);
+//            holder.inspectionDate= (TextView) view.findViewById(R.id.textInspectionDate);
             view.setTag(holder);
 
         } else {
@@ -100,28 +100,28 @@ public class ListViewAdapter extends BaseAdapter {
                 " " + restaurantList.get(position).getPHYSICALCITY());
 //        holder.city.setText(restaurantList.get(position).getPHYSICALCITY());
 
-        holder.rating.setText(String.format("Hazard Rating: %s", restaurantList.get(position).getHazardRating()));
-        if("Low".equals(restaurantList.get(position).getHazardRating())){
-            holder.rating.setTextColor(Color.GREEN);
-        } else if("Moderate".equals(restaurantList.get(position).getHazardRating())){
-            holder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
-        } else if("High".equals(restaurantList.get(position).getHazardRating())){
-            holder.rating.setTextColor(Color.RED);
-        }
+//        holder.rating.setText(String.format("Hazard Rating: %s", restaurantList.get(position).getHazardRating()));
+//        if("Low".equals(restaurantList.get(position).getHazardRating())){
+//            holder.rating.setTextColor(Color.GREEN);
+//        } else if("Moderate".equals(restaurantList.get(position).getHazardRating())){
+//            holder.rating.setTextColor(ContextCompat.getColor(mContext, R.color.orange));
+//        } else if("High".equals(restaurantList.get(position).getHazardRating())){
+//            holder.rating.setTextColor(Color.RED);
+//        }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
-        try {
-            String dateStr = restaurantList.get(position).getInspectionDate();
-            if(dateStr.equals("none")){
-                holder.inspectionDate.setText(dateStr);
-            }else{
-                Date d1 = sdf.parse(dateStr);
-                sdf.applyPattern("MM/dd/yyyy");
-                holder.inspectionDate.setText(String.format("InspectionDate: %s", sdf.format(d1)));
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+//        try {
+//            String dateStr = restaurantList.get(position).getInspectionDate();
+//            if(dateStr.equals("none")){
+//                holder.inspectionDate.setText(dateStr);
+//            }else{
+//                Date d1 = sdf.parse(dateStr);
+//                sdf.applyPattern("MM/dd/yyyy");
+//                holder.inspectionDate.setText(String.format("InspectionDate: %s", sdf.format(d1)));
+//            }
+//        } catch (ParseException e) {
+//            e.printStackTrace();
+//        }
 
 
         return view;
