@@ -3,3 +3,5 @@ An android application that allows users to search for restaurants in the City o
 Uses open-source restaurant inspection reports from the City of Surrey and classifies restaurants into low, moderate, and high hazards.
 Uses Google's Firebase for real-time databases functions and MySQL for local storage. 
 
+![Introduction](/Introduction.PNG?raw=true)
+![Benefits](/benefits.PNG?raw=true)
